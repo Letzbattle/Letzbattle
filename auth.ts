@@ -14,12 +14,20 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     },
     async jwt({ token, account }) {
       // If the account exists, it means the user just logged in
+  
       if (account) {
-        // Fetch the id_token from the account and store it in the token
+        token = {
+          ...token,
+          idToken: account.id_token, // Set the new id_token
+        };
+      }
+
+      // Fetch the id_token from the database if it exists
+      if (!token.idToken) {
         const prismaAccount = await db.account.findFirst({
           where: {
-            provider: account.provider,
-            providerAccountId: account.providerAccountId,
+            provider: account?.provider || "google",
+            providerAccountId: account?.providerAccountId || token.sub,
           },
         });
 
