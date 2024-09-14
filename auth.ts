@@ -3,6 +3,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "./auth.config";
 import { db } from "@/lib/db";
 
+const ONE_YEAR = 365 * 24 * 60 * 60; // 1 year in seconds
+
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async session({ token, session }) {
@@ -39,6 +41,13 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     },
   },
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  //for now set to one year will add refresh token later:TODO
+  session: { 
+    strategy: "jwt",
+    maxAge: ONE_YEAR, // Set session max age to 1 year
+  },
+  jwt: {
+    maxAge: ONE_YEAR, // Set JWT max age to 1 year
+  },
   ...authConfig,
 });

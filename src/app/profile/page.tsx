@@ -1,18 +1,28 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { getSession } from 'next-auth/react'
+import { getSession, useSession } from 'next-auth/react'
+import { useApi } from '@/hooks/useApi'
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState<any>(null)
+  const { data: session, status, update } = useSession()
+  const {callApi}=useApi()
 
   const fetchSession = async () => {
     const session = await getSession()
-    setUserInfo(session)
+    console.log(session?.user?.email,'email')
+  
+    if(status==='authenticated'){
+      const userInfo=await callApi('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user')
+      setUserInfo(userInfo)
+      console.log({userInfo},'ds')
+    }
+  
   }
 
   useEffect(() => {
     fetchSession()
-  }, [])
+  }, [session])
 
   return (
     <>
