@@ -15,7 +15,7 @@ const Profile = () => {
     if(status==='authenticated'){
       const userInfo=await callApi('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user')
       setUserInfo(userInfo)
-      console.log({userInfo},'ds')
+      console.log({userInfo})
     }
   
   }
