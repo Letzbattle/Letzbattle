@@ -16,7 +16,6 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     },
     async jwt({ token, account }) {
       // If the account exists, it means the user just logged in
-  
       if (account) {
         token = {
           ...token,
@@ -37,17 +36,17 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
           token.idToken = prismaAccount.id_token;
         }
       }
+
+      // Set the token expiration to one year from now
+      token.exp = Math.floor(Date.now() / 1000) + ONE_YEAR;
+
       return token;
     },
   },
   adapter: PrismaAdapter(db),
-  //for now set to one year will add refresh token later:TODO
   session: { 
     strategy: "jwt",
     maxAge: ONE_YEAR, // Set session max age to 1 year
-  },
-  jwt: {
-    maxAge: ONE_YEAR, // Set JWT max age to 1 year
   },
   ...authConfig,
 });
