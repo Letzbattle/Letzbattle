@@ -6,14 +6,14 @@ import { useApi } from '@/hooks/useApi'
 const Profile = () => {
   const [userInfo, setUserInfo] = useState<any>(null)
   const { data: session, status, update } = useSession()
-  const {callApi}=useApi()
+  const {get}=useApi()
 
   const fetchSession = async () => {
     const session = await getSession()
     console.log(session?.user?.email,'email')
   
     if(status==='authenticated'){
-      const userInfo=await callApi('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user')
+      const userInfo=await get('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user')
       setUserInfo(userInfo)
     }
   
