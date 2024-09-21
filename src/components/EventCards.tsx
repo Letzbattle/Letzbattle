@@ -1,11 +1,9 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import {useApi} from "../hooks/useApi"
 import { CardBody, CardContainer, CardItem } from "./ui/3d-card";
 import Link from "next/link";
 import axios from "axios";
-import Particles from "./magicui/particles";
 
 interface Event {
   id: string;
@@ -20,17 +18,22 @@ interface Event {
 export function EventCards() {
   const [Loading, setLoading] = useState<boolean>(false);
   const [allEvents,setAllEvents] = useState([]);
-  const {get}=useApi();
 
   useEffect(()=>{
     const getAllEvents = async () => {
       setLoading(true);
+      try{
+
+      
       const res = await axios.get("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events");
       setAllEvents(res.data.events);
       setLoading(false);
       // console.log(res.data);
       // console.log(allEvents);
       // setAllEvents(res.data.events);
+      }catch(err){
+        console.error(err)
+      }
     };
     getAllEvents();
   },[]);
