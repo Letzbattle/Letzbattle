@@ -24,7 +24,7 @@ export default async function middleware(req:any) {
   if (isLoggedIn) {
     try {
       const userResponse = await fetch(
-        `http://localhost:3001/api/user`,
+        `https://https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user/user`,
         {
           headers: {
             Authorization: `Bearer ${token?.idToken}`,
