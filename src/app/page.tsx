@@ -17,8 +17,6 @@ export default async function Home() {
       // Redirect to the onboarding page
       return redirect('/onboard');
     }
-  } else {
-    return redirect('/login'); 
   }
 
   console.log({ user });
