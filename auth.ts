@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { db } from "@/lib/db"; // Your Prisma client instance
 import authConfig from "./auth.config"; // Your custom config
+import { getUserById } from "@/data/user";
 
 const ONE_YEAR = 365 * 24 * 60 * 60; // 1 year in seconds
 
@@ -40,7 +41,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
       return session;
     },
     // JWT callback, manages JWT tokens
-    async jwt({ token, account }: { token: any; account: any }) {
+    async jwt({ token, account,user }: { token: any; account: any,user:any }) {
       if (account) {
         // Set the access token, refresh token, id token, and expiration if available
         token.accessToken = account.access_token;
@@ -48,6 +49,19 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         token.idToken = account.id_token;
         token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + ONE_YEAR * 1000;
       }
+      console.log({account,user})
+      if (user) {
+        const userData = await getUserById(user.id); // Fetch the user from your database
+        console.log({userData},"annna")
+        token.isOnboarded = userData?.isOnboarded; // Add isOnboarded to the token
+      }
+      if (!token.isOnboarded && token.sub) {
+        // Fetch the user from DB if isOnboarded is missing (e.g., on token refresh)
+        const userData = await getUserById(token.sub);
+        token.isOnboarded = userData?.isOnboarded;
+      }
+
+      console.log({token},"avail")
 
       // If the access token hasn't expired, return the current token
       if (Date.now() < token.accessTokenExpires) {

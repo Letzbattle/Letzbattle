@@ -1,60 +1,40 @@
 import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from '../routes';
+import { DEFAULT_LOGIN_REDIRECT, publicRoutes } from '../routes';
 
-const secret =  "supersecret";
+const secret = "supersecret";
 
-export default async function middleware(req:any) {
+export default async function middleware(req: any) {
   const { nextUrl } = req;
   const token = await getToken({ req, secret });
-  console.log({token})
+  console.log({ token });
   const isLoggedIn = !!token; // Check if user is logged in
-  // const isAPiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  // const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  // const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  const isLoginPage = nextUrl.pathname === "/login";
+  const isOnboardingPage = nextUrl.pathname === "/onboard";
 
   console.log("Middleware triggered");
 
-  // Allow API auth routes
-  // if (isAPiAuthRoute) {
-  //   return NextResponse.next();
-  // }
-
-  // Redirect logic for logged-in users
   if (isLoggedIn) {
-    try {
-      const userResponse = await fetch(`${req.nextUrl.origin}/api/getUser`, {
-        headers: {
-          Authorization: `Bearer ${token.idToken}`,
-        },
-      });
-    
-
-      if (!userResponse.ok) {
-        console.log("inside")
-        console.error("Failed to fetch user details:", userResponse.statusText);
-        return NextResponse.redirect(new URL("/login", nextUrl));
-      }
-
-      const userData = await userResponse.json();
-      const isOnboarded = userData?.isOnboarded;
-
-      console.log(userData.user.isOnboarded);
-
-      // Redirect based on onboarding status
-      if (!userData?.user?.isOnboarded && nextUrl.pathname !== "/onboard") {
-        return NextResponse.redirect(new URL("/onboard", nextUrl));
-      }
-      if (userData?.user?.isOnboarded && nextUrl.pathname === "/onboard") {
-        return NextResponse.redirect(new URL("/", nextUrl));
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
+    // If logged in and accessing the login page, redirect away
+    if (isLoginPage) {
       return NextResponse.redirect(new URL("/", nextUrl));
     }
+
+    // Handle onboarding redirection
+    if (token?.isOnboarded) {
+      // If the user is onboarded, redirect them away from the onboarding page
+      if (isOnboardingPage) {
+        return NextResponse.redirect(new URL("/", nextUrl));
+      }
+    } else {
+      // If the user is not onboarded, redirect them to the onboarding page
+      if (!isOnboardingPage) {
+        return NextResponse.redirect(new URL("/onboard", nextUrl));
+      }
+    }
   } else {
-    // If not logged in, redirect to login if not on a public route or the login page
-    if (nextUrl.pathname !== "/login") {
+    // If not logged in, only allow access to public routes (e.g., login page)
+    if (!isLoginPage && !publicRoutes.includes(nextUrl.pathname)) {
       return NextResponse.redirect(new URL("/login", nextUrl));
     }
   }
