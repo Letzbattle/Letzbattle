@@ -6,7 +6,7 @@ const secret =  "supersecret";
 
 export default async function middleware(req:any) {
   const { nextUrl } = req;
-  const token = await getToken({ req, secret });
+  const token = await getToken({ req, secret:"supersecret" });
   console.log({token})
   const isLoggedIn = !!token; // Check if user is logged in
   const isAPiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
