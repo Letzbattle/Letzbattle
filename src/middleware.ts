@@ -2,68 +2,63 @@ import { NextResponse } from 'next/server';
 import { getToken } from 'next-auth/jwt';
 import { DEFAULT_LOGIN_REDIRECT, apiAuthPrefix, authRoutes, publicRoutes } from '../routes';
 
-const secret =  "supersecret";
+const secret = process.env.NEXTAUTH_SECRET;
+const apiUrl = process.env.API_URL;
 
-export default async function middleware(req:any) {
+export default async function middleware(req: any) {
   const { nextUrl } = req;
-  const token = await getToken({ req, secret:"supersecret" });
-  console.log({token})
-  const isLoggedIn = !!token; // Check if user is logged in
-  const isAPiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  console.log(`Middleware triggered for path: ${nextUrl.pathname}`);
 
-  console.log("Middleware triggered");
+  try {
+    const token = await getToken({ req, secret:"supersecret" });
+    console.log(`Token retrieved: ${!!token}`);
 
-  // Allow API auth routes
-  if (isAPiAuthRoute) {
-    return NextResponse.next();
-  }
+    const isLoggedIn = !!token;
+    const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+    const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
 
-  // Redirect logic for logged-in users
-  if (isLoggedIn) {
-    try {
-      const userResponse = await fetch(
-        `https://letzbattle-backend.onrender.com/api/user`,
-        {
-          headers: {
-            Authorization: `Bearer ${token?.idToken}`,
-          },
-        }
-      );
+    if (isApiAuthRoute) {
+      console.log('API auth route, proceeding');
+      return NextResponse.next();
+    }
+
+    if (isLoggedIn) {
+      console.log('User is logged in, fetching user data');
+      const userResponse = await fetch(`${apiUrl}/api/user`, {
+        headers: {
+          Authorization: `Bearer ${token?.idToken}`,
+        },
+      });
 
       if (!userResponse.ok) {
-        console.log("inside")
-        console.error("Failed to fetch user details:", userResponse.statusText);
-        return NextResponse.redirect(new URL("/login", nextUrl));
+        console.error(`Failed to fetch user details: ${userResponse.statusText}`);
+        return NextResponse.redirect(new URL('/login', nextUrl));
       }
 
       const userData = await userResponse.json();
-      const isOnboarded = userData?.isOnboarded;
+      console.log(`User onboarding status: ${userData.user.isOnboarded}`);
 
-      console.log(userData.user.isOnboarded);
+      if (!userData.user.isOnboarded && nextUrl.pathname !== '/onboard') {
+        console.log('Redirecting to onboarding');
+        return NextResponse.redirect(new URL('/onboard', nextUrl));
+      }
+      if (userData.user.isOnboarded && nextUrl.pathname === '/onboard') {
+        console.log('Redirecting to home');
+        return NextResponse.redirect(new URL('/', nextUrl));
+      }
+    } else if (!isPublicRoute && nextUrl.pathname !== '/login') {
+      console.log('User not logged in, redirecting to login');
+      return NextResponse.redirect(new URL('/login', nextUrl));
+    }
 
-      // Redirect based on onboarding status
-      if (!userData?.user?.isOnboarded && nextUrl.pathname !== "/onboard") {
-        return NextResponse.redirect(new URL("/onboard", nextUrl));
-      }
-      if (userData?.user?.isOnboarded && nextUrl.pathname === "/onboard") {
-        return NextResponse.redirect(new URL("/", nextUrl));
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-      return NextResponse.redirect(new URL("/", nextUrl));
-    }
-  } else {
-    // If not logged in, redirect to login if not on a public route or the login page
-    if (!isPublicRoute && nextUrl.pathname !== "/login") {
-      return NextResponse.redirect(new URL("/login", nextUrl));
-    }
+    console.log('Proceeding with request');
+    return NextResponse.next();
+  } catch (error) {
+    console.error('Error in middleware:', error);
+    return NextResponse.redirect(new URL('/error', nextUrl));
   }
-
-  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };
