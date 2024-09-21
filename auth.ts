@@ -49,10 +49,8 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         token.idToken = account.id_token;
         token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + ONE_YEAR * 1000;
       }
-      console.log({account,user})
       if (user) {
         const userData = await getUserById(user.id); // Fetch the user from your database
-        console.log({userData},"annna")
         token.isOnboarded = userData?.isOnboarded; // Add isOnboarded to the token
       }
       if (!token.isOnboarded && token.sub) {
@@ -61,7 +59,6 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         token.isOnboarded = userData?.isOnboarded;
       }
 
-      console.log({token},"avail")
 
       // If the access token hasn't expired, return the current token
       if (Date.now() < token.accessTokenExpires) {
