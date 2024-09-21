@@ -30,7 +30,7 @@ export function OnboardingForm() {
   const { post } = useApi();
   const router = useRouter();
 
-  const { data: session } = useSession();
+  const { data: session,update } = useSession();
 
   // Set up the headers with the JWT token
   //  const headers = {
@@ -58,6 +58,7 @@ export function OnboardingForm() {
 
       if (response) {
         setSuccess('Onboarded successfully!');
+        await update();
       router.push("/");
 
         setError('');
