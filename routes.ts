@@ -11,7 +11,6 @@ export default auth((req) => {
     const isAPiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-console.log('s')
     // For API auth routes, continue without modification
     if (isAPiAuthRoute) {
         return NextResponse.next();
@@ -27,7 +26,6 @@ console.log('s')
 
     // If accessing a protected route (not public or auth route), and not logged in, redirect to login
     if (!isLoggedIn && !isPublicRoute) {
-        console.log('d')
         return NextResponse.redirect(new URL("/auth/login", nextUrl));  // Redirect to login if not authenticated
     }
 

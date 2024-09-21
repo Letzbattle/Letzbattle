@@ -1,52 +1,73 @@
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import authConfig from "./auth.config";
-import { db } from "@/lib/db";
+import { db } from "@/lib/db"; // Your Prisma client instance
+import authConfig from "./auth.config"; // Your custom config
+import { getUserById } from "@/data/user";
 
 const ONE_YEAR = 365 * 24 * 60 * 60; // 1 year in seconds
 
+// Function to refresh access tokens when they expire
+async function refreshAccessToken(token: any) {
+  try {
+    // Add logic to refresh the access token (this depends on your auth provider)
+    return {
+      ...token,
+      accessToken: "newAccessToken", // Replace with refreshed token
+      accessTokenExpires: Date.now() + ONE_YEAR * 1000, // Extend expiration
+    };
+  } catch (error) {
+    return {
+      ...token,
+      error: "RefreshAccessTokenError",
+    };
+  }
+}
+
 export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
-  callbacks: {
-    async session({ token, session }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-        session.idToken = token.idToken;  // Include id_token in the session
-      }
-      return session;
-    },
-    async jwt({ token, account }) {
-      // If the account exists, it means the user just logged in
-      if (account) {
-        token = {
-          ...token,
-          idToken: account.id_token, // Set the new id_token
-        };
-      }
-
-      // Fetch the id_token from the database if it exists
-      if (!token.idToken) {
-        const prismaAccount = await db.account.findFirst({
-          where: {
-            provider: account?.provider || "google",
-            providerAccountId: account?.providerAccountId || token.sub,
-          },
-        });
-
-        if (prismaAccount && prismaAccount.id_token) {
-          token.idToken = prismaAccount.id_token;
-        }
-      }
-
-      // Set the token expiration to one year from now
-      token.exp = Math.floor(Date.now() / 1000) + ONE_YEAR;
-
-      return token;
-    },
-  },
   adapter: PrismaAdapter(db),
-  session: { 
+  session: {
     strategy: "jwt",
     maxAge: ONE_YEAR, // Set session max age to 1 year
   },
-  ...authConfig,
+  callbacks: {
+    // Session callback, attaches necessary fields to session
+    async session({ session, token }: { session: any; token: any }) {
+      if (token.sub) {
+        session.user.id = token.sub ?? ""; // Default empty string if undefined
+      }
+      session.idToken = token.idToken;
+      session.accessToken = token.accessToken;
+      session.error = token.error;
+      return session;
+    },
+    // JWT callback, manages JWT tokens
+    async jwt({ token, account,user }: { token: any; account: any,user:any }) {
+      if (account) {
+        // Set the access token, refresh token, id token, and expiration if available
+        token.accessToken = account.access_token;
+        token.refreshToken = account.refresh_token;
+        token.idToken = account.id_token;
+        token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : Date.now() + ONE_YEAR * 1000;
+      }
+      if (user) {
+        const userData = await getUserById(user.id); // Fetch the user from your database
+        token.isOnboarded = userData?.isOnboarded; // Add isOnboarded to the token
+      }
+      if (!token.isOnboarded && token.sub) {
+        // Fetch the user from DB if isOnboarded is missing (e.g., on token refresh)
+        const userData = await getUserById(token.sub);
+        token.isOnboarded = userData?.isOnboarded;
+      }
+
+
+      // If the access token hasn't expired, return the current token
+      if (Date.now() < token.accessTokenExpires) {
+        return token;
+      }
+
+      // If the token is expired, attempt to refresh it
+      return await refreshAccessToken(token);
+    },
+  },
+  ...authConfig, // Additional authentication configuration
 });

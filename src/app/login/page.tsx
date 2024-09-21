@@ -5,7 +5,7 @@ import React from "react";
 const Login = () => {
   const login = (provider: "google") => {
     signIn(provider, {
-      callbackUrl: "/onboard",
+      callbackUrl: "/",
     });
 
   };

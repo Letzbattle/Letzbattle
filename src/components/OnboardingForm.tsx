@@ -47,7 +47,7 @@ export function OnboardingForm() {
   const { post } = useApi();
   const router = useRouter();
 
-  const { data: session } = useSession();
+  const { data: session,update } = useSession();
 
   // Set up the headers with the JWT token
   //  const headers = {
@@ -93,8 +93,11 @@ export function OnboardingForm() {
       const response = await post("/api/onboard", parsedData);
 
       if (response) {
-        setSuccess("Onboarded successfully!");
-        setError("");
+        setSuccess('Onboarded successfully!');
+        await update();
+      router.push("/");
+
+        setError('');
       }
       // const response = await axios.post(
       //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard",
@@ -127,17 +130,8 @@ export function OnboardingForm() {
       //     },
       //   }
       // );
-      router.push("/");
-    } catch (validationError: any) {
-      // console.error("Error:", error);
-      // setError("Something went wrong. Please try again.");
-      setSuccess(""); // Clear any previous success message
-      if (validationError instanceof z.ZodError) {
-        // If it's a Zod error, extract the first error message and display it
-        setError(validationError.errors[0].message);
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
   return (
