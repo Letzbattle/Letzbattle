@@ -58,6 +58,8 @@ export function OnboardingForm() {
 
       if (response) {
         setSuccess('Onboarded successfully!');
+      router.push("/");
+
         setError('');
       }
       // const response = await axios.post(
@@ -90,7 +92,6 @@ export function OnboardingForm() {
       //     },
       //   }
       // );
-      router.push("/");
     } catch (error) {
       console.error("Error:", error);
     }

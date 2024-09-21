@@ -20,8 +20,10 @@ const Profile = () => {
   }
 
   useEffect(() => {
+    console.log(session?.user?.email,'email')
+
     fetchSession()
-  }, [session])
+  }, [session?.user?.email])
 
   return (
     <>
