@@ -23,14 +23,12 @@ export default async function middleware(req:any) {
   // Redirect logic for logged-in users
   if (isLoggedIn) {
     try {
-      const userResponse = await fetch(
-        `https://letzbattle-backend.onrender.com/api/user`,
-        {
-          headers: {
-            Authorization: `Bearer ${token?.idToken}`,
-          },
-        }
-      );
+      const userResponse = await fetch(`${req.nextUrl.origin}/api/getUser`, {
+        headers: {
+          Authorization: `Bearer ${token.idToken}`,
+        },
+      });
+    
 
       if (!userResponse.ok) {
         console.log("inside")
