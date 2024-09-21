@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { z } from "zod"; // Import Zod
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { cn } from "@/utils/cn";
@@ -12,8 +13,25 @@ import {
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Particles from "./magicui/particles";
+import LabelInputContainer from "./ui/LabelInputContainer";
+import BottomGradient from "./ui/BottomGradient";
 
 export function OnboardingForm() {
+
+  // Define Zod schema for validation
+  const onboardFormSchema=z.object({
+    name:z.string().min(2,{message:"Name is required"}),
+    age:z.number().min(12,{message:"Age must be at least 12"}),
+    gender: z.string().nonempty({ message: "Gender is required" }),
+    // phoneNumber:z.string().min(10,{message:"Phone number must be at least 10 digits"}),
+    phoneNumber: z
+    .string()
+    .regex(/^\d{10}$/, { message: "Phone number must be 10 digits" }),
+    bgmiId: z.string().optional(), // Optional fields
+    instagramId: z.string().optional(),
+  })
+
   const [formState, setFormState] = useState({
     name: "",
     age: 0,
@@ -23,9 +41,8 @@ export function OnboardingForm() {
     instagramId: "",
   });
 
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
-
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const { post } = useApi();
   const router = useRouter();
@@ -52,13 +69,32 @@ export function OnboardingForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // const validation=onboardFormSchema.safeParse(formState);
+    const parsedData = {
+      ...formState,
+      // entryFees: Number(eventData.entryFees),
+      // // prize: Number(eventData.prize),
+      // seatsLeft: Number(eventData.seatsLeft),
+    };
+
     try {
       // const response = await callApi('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard',formState as any)
-      const response = await post('/api/onboard', formState);
+      onboardFormSchema.parse(parsedData);
+      // if(!validation.success){
+      //   const formattedErrors=validation.error.format();
+      //   // console.log(formattedErrors);
+      //   setError(formattedErrors._errors[0]);
+      //   return;
+      // }
+      // else{
+      //   setError("Something went wrong. Please try again.");
+      // }
+      
+      const response = await post("/api/onboard", parsedData);
 
       if (response) {
-        setSuccess('Onboarded successfully!');
-        setError('');
+        setSuccess("Onboarded successfully!");
+        setError("");
       }
       // const response = await axios.post(
       //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard",
@@ -70,6 +106,7 @@ export function OnboardingForm() {
       //   }
       // );
       // console.log("Success:", response.data);
+
       // Reset the form after successful submission
       setFormState({
         name: "",
@@ -91,13 +128,31 @@ export function OnboardingForm() {
       //   }
       // );
       router.push("/");
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (validationError: any) {
+      // console.error("Error:", error);
+      // setError("Something went wrong. Please try again.");
+      setSuccess(""); // Clear any previous success message
+      if (validationError instanceof z.ZodError) {
+        // If it's a Zod error, extract the first error message and display it
+        setError(validationError.errors[0].message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   };
   return (
-    <div className="bg-black sm:h-full min-[320px]:h-screen">
-      <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+    <div 
+    className="bg-black h-screen flex justify-center items-center"
+    // className="bg-black sm:h-full min-[320px]:h-screen "
+    >
+      <Particles
+        className="fixed inset-0 h-full w-full"
+        quantity={500}
+        ease={100}
+        color="#ffffff"
+        refresh
+      />
+      <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black z-10">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
           Welcome to LetzBattle
         </h2>
@@ -167,7 +222,7 @@ export function OnboardingForm() {
               onChange={handleChange}
             />
           </LabelInputContainer>
-          <LabelInputContainer className="mb-8">
+          <LabelInputContainer className="mb-4">
             <Label htmlFor="instagramId">Instagram ID (Optional)</Label>
             <Input
               id="instagramId"
@@ -187,7 +242,7 @@ export function OnboardingForm() {
             <BottomGradient />
           </button>
 
-          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
+          {/* <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" /> */}
 
           {/* <div className="flex flex-col space-y-4">
           <button
@@ -227,25 +282,25 @@ export function OnboardingForm() {
   );
 }
 
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
-      <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
-    </>
-  );
-};
+// const BottomGradient = () => {
+//   return (
+//     <>
+//       <span className="group-hover/btn:opacity-100 block transition duration-500 opacity-0 absolute h-px w-full -bottom-px inset-x-0 bg-gradient-to-r from-transparent via-cyan-500 to-transparent" />
+//       <span className="group-hover/btn:opacity-100 blur-sm block transition duration-500 opacity-0 absolute h-px w-1/2 mx-auto -bottom-px inset-x-10 bg-gradient-to-r from-transparent via-indigo-500 to-transparent" />
+//     </>
+//   );
+// };
 
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex flex-col space-y-2 w-full", className)}>
-      {children}
-    </div>
-  );
-};
+// const LabelInputContainer = ({
+//   children,
+//   className,
+// }: {
+//   children: React.ReactNode;
+//   className?: string;
+// }) => {
+//   return (
+//     <div className={cn("flex flex-col space-y-2 w-full", className)}>
+//       {children}
+//     </div>
+//   );
+// };
