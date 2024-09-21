@@ -24,7 +24,7 @@ export default async function middleware(req:any) {
   if (isLoggedIn) {
     try {
       const userResponse = await fetch(
-        `https://https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user`,
+        `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user`,
         {
           headers: {
             Authorization: `Bearer ${token?.idToken}`,
@@ -33,6 +33,7 @@ export default async function middleware(req:any) {
       );
 
       if (!userResponse.ok) {
+        console.log("inside")
         console.error("Failed to fetch user details:", userResponse.statusText);
         return NextResponse.redirect(new URL("/login", nextUrl));
       }
