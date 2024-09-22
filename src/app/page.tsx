@@ -7,7 +7,7 @@ import { db } from '@/lib/db';
 import { getUserById } from '@/data/user';
 import { redirect } from "next/navigation";
 import Header from "./components/Header";
-import { EventCards } from "@/components/EventCards";
+import { AllEvents } from "@/components/AllEvents";
 
 export default async function Home() {
   const session = await auth();
@@ -26,7 +26,7 @@ export default async function Home() {
     <div className="bg-black">
       <Header/>
       <HeroSection/>
-      <EventCards/>
+      <AllEvents/>
       {/* <LatestQuestions/> */}
       <Footer/>
     </div>
