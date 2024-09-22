@@ -15,7 +15,7 @@ interface Event {
   // Add other properties if available
 }
 
-export function AllEvents() {
+export function EventCards() {
   const [Loading, setLoading] = useState<boolean>(false);
   const [allEvents,setAllEvents] = useState([]);
 
@@ -25,7 +25,7 @@ export function AllEvents() {
       try{
 
       
-      const res = await axios.get("https://letzbattle-backend.onrender.com/api/events");
+    const res = await axios.get("https://letzbattle-backend.onrender.com/api/events");
       setAllEvents(res.data.events);
       setLoading(false);
       // console.log(res.data);

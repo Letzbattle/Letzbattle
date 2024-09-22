@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NextAuthSessionProvider from "./provide/SessionProvider";
+import KeepAlive from "./components/KeepAlive";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <KeepAlive/>
       <NextAuthSessionProvider>
       {children}
       </NextAuthSessionProvider>
