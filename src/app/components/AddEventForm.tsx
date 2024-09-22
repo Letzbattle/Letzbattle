@@ -18,7 +18,13 @@ const eventSchema = z.object({
     message: "Invalid date",
   }),
   entryFees: z.number().min(0, { message: "Entry fees must be a positive number" }),
-  prize: z.string().min(1, { message: "Prize must be a positive number with currency" }),
+  prize: z
+  .string()
+  .refine((value) => {
+    // Extract numeric part from the string and check if it's a positive number
+    const numericValue = parseFloat(value.replace(/[^\d.-]/g, ""));
+    return numericValue > 0;
+  }, { message: "Prize must be a positive number" }),
   seatsLeft: z.number().min(1, { message: "Seats left must be at least 1" }),
 });
 
