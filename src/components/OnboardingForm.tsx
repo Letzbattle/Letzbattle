@@ -130,8 +130,15 @@ export function OnboardingForm() {
       //     },
       //   }
       // );
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (validationError: any) {
+      setSuccess(""); // Clear any previous success message
+      if (validationError instanceof z.ZodError) {
+        // If it's a Zod error, extract the first error message and display it
+        setError(validationError.errors[0].message);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+      // setError(error?.response?.data?.message || "Failed to create event");
     }
   };
   return (
