@@ -12,7 +12,6 @@ import { AllEvents } from "@/components/AllEvents";
 export default async function Home() {
   const session = await auth();
   const user = await getUserById(session?.user.id || '');
-
   if (user) {
     if (!user.isOnboarded) {
       // Redirect to the onboarding page
@@ -20,7 +19,6 @@ export default async function Home() {
     }
   }
 
-  console.log({ user });
   
   return (
     <div className="bg-black">
