@@ -56,7 +56,7 @@ export const useApi = () => {
 
   // Set default headers
   const api = axios.create({
-    baseURL: "https://letzbattle-backend.onrender.com", // Make sure to define this in your environment variables
+    baseURL: "https://bitter-quokka-letzbattle-e9e73964.koyeb.app", // Make sure to define this in your environment variables
     headers: {
       Authorization: `Bearer ${session.idToken}`,
     },

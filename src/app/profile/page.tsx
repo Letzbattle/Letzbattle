@@ -13,7 +13,7 @@ const Profile = () => {
     console.log(session?.user?.email,'email')
   
     if(status==='authenticated'){
-      const userInfo=await get('https://letzbattle-backend.onrender.com/api/user')
+      const userInfo=await get('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user')
       setUserInfo(userInfo)
     }
   

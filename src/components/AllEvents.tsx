@@ -25,7 +25,7 @@ export function AllEvents() {
       try{
 
       
-      const res = await axios.get("https://letzbattle-backend.onrender.com/api/events");
+      const res = await axios.get("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events");
       setAllEvents(res.data.events);
       setLoading(false);
       // console.log(res.data);
