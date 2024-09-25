@@ -5,6 +5,7 @@ import NextAuthSessionProvider from "./provide/SessionProvider";
 import KeepAlive from "./components/KeepAlive";
 import { auth } from "../../auth";
 import { signOut } from "next-auth/react";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,8 @@ export default async function RootLayout({
       {children}
       </NextAuthSessionProvider>
       </body>
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" />
+
     </html>
   );
 }
