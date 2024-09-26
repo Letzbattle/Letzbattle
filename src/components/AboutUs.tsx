@@ -22,7 +22,7 @@ const AboutUs = () => {
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Our Mission</h2>
         <p>
-          At LetzBattle, we believe in providing fair competition for everyone, regardless of experience or skill level. Whether you're a seasoned professional or just getting started, there's a place for you in our community.
+          At LetzBattle, we believe in providing fair competition for everyone, regardless of experience or skill level. Whether you are a seasoned professional or just getting started, there is a place for you in our community.
         </p>
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Why Choose Us?</h2>

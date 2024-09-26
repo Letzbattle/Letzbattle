@@ -25,7 +25,7 @@ const ContactUs = () => {
     <div className="container mx-auto p-8">
       <h1 className="text-4xl font-bold text-center mb-10">Get in Touch</h1>
       <p className="text-lg text-center mb-8 text-gray-600">
-        Have questions or feedback? We'd love to hear from you! Fill out the form below or reach out directly at <a href="mailto:support@letzbattle.com" className="text-blue-500 underline">Letzbattle.tech@gmail.com</a>.
+        Have questions or feedback? We did love to hear from you! Fill out the form below or reach out directly at <a href="mailto:support@letzbattle.com" className="text-blue-500 underline">Letzbattle.tech@gmail.com</a>.
       </p>
       
       {submitted ? (
