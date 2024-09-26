@@ -1,11 +1,11 @@
 
-import { OnboardingForm } from '@/app/components/OnboardingForm'
+import AboutUs from '@/components/AboutUs'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-      <OnboardingForm/>
+      <AboutUs/>
     </div>
   )
 }

@@ -1,14 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Particles from "./magicui/particles";
-import LabelInputContainer from "./ui/LabelInputContainer";
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import Particles from "../../components/magicui/particles";
+import LabelInputContainer from "../../components/ui/LabelInputContainer";
+import { Label } from "../../components/ui/label";
+import { Input } from "../../components/ui/input";
 import { useApi } from "@/hooks/useApi";
 // import { useRouter } from 'next/router'
 import { useSession } from "next-auth/react";
 import { z } from "zod";
-import BottomGradient from "./ui/BottomGradient";
+import BottomGradient from "../../components/ui/BottomGradient";
 import { useRouter } from "next/navigation";
 import { param } from "framer-motion/m";
 import axios from "axios";
@@ -102,7 +102,7 @@ const RegisterEvent = (params: any) => {
           await post(`/api/events/${params.params.id}/participants`, formState);
 
           setSuccess("Payment successful and verified!");
-
+router.push('/success')
           // Proceed with further actions, like updating user data or redirecting
         } catch (error) {
           setError("Payment verification failed");

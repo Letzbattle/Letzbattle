@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { z } from "zod"; // Import Zod
-import { Label } from "./ui/label";
-import { Input } from "./ui/input";
+import { Label } from "../../components/ui/label";
+import { Input } from "../../components/ui/input";
 import { cn } from "@/utils/cn";
 import { useApi } from "@/hooks/useApi";
 import {
@@ -13,24 +13,23 @@ import {
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Particles from "./magicui/particles";
-import LabelInputContainer from "./ui/LabelInputContainer";
-import BottomGradient from "./ui/BottomGradient";
+import Particles from "../../components/magicui/particles";
+import LabelInputContainer from "../../components/ui/LabelInputContainer";
+import BottomGradient from "../../components/ui/BottomGradient";
 
 export function OnboardingForm() {
-
   // Define Zod schema for validation
-  const onboardFormSchema=z.object({
-    name:z.string().min(2,{message:"Name is required"}),
-    age:z.number().min(12,{message:"Age must be at least 12"}),
-    gender: z.string().nonempty({ message: "Gender is required" }),
+  const onboardFormSchema = z.object({
+    name: z.string().min(2, { message: "Name is required" }),
+    age: z.number().min(12, { message: "Age must be at least 12" }),
+    gender: z.string().min(1,{ message: "Gender is required" }),
     // phoneNumber:z.string().min(10,{message:"Phone number must be at least 10 digits"}),
     phoneNumber: z
-    .string()
-    .regex(/^\d{10}$/, { message: "Phone number must be 10 digits" }),
+      .string()
+      .regex(/^\d{10}$/, { message: "Phone number must be 10 digits" }),
     bgmiId: z.string().optional(), // Optional fields
     instagramId: z.string().optional(),
-  })
+  });
 
   const [formState, setFormState] = useState({
     name: "",
@@ -47,7 +46,7 @@ export function OnboardingForm() {
   const { post } = useApi();
   const router = useRouter();
 
-  const { data: session,update } = useSession();
+  const { data: session, update } = useSession();
 
   // Set up the headers with the JWT token
   //  const headers = {
@@ -55,7 +54,7 @@ export function OnboardingForm() {
   //   "Content-Type": "application/json", // Add default content type
   // };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: any) => {
     const { name, value } = e.target;
     if (name === "age") {
       setFormState({ ...formState, age: parseInt(value) });
@@ -89,15 +88,15 @@ export function OnboardingForm() {
       // else{
       //   setError("Something went wrong. Please try again.");
       // }
-      
+
       const response = await post("/api/onboard", parsedData);
 
       if (response) {
-        setSuccess('Onboarded successfully!');
+        setSuccess("Onboarded successfully!");
         await update();
-      router.push("/");
+        router.push("/");
 
-        setError('');
+        setError("");
       }
       // const response = await axios.post(
       //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard",
@@ -142,9 +141,9 @@ export function OnboardingForm() {
     }
   };
   return (
-    <div 
-    className="bg-black h-screen flex justify-center items-center"
-    // className="bg-black sm:h-full min-[320px]:h-screen "
+    <div
+      className="bg-black h-screen flex justify-center items-center"
+      // className="bg-black sm:h-full min-[320px]:h-screen "
     >
       <Particles
         className="fixed inset-0 h-full w-full"
@@ -193,13 +192,32 @@ export function OnboardingForm() {
           </div>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="gender">Gender</Label>
-            <Input
+            <select name="gender" id="gender" onChange={handleChange}
+            className={cn(
+              `flex h-10 w-full border-none bg-gray-50 dark:bg-zinc-800 text-black dark:text-white shadow-input rounded-md px-3 py-2 text-sm  file:border-0 file:bg-transparent 
+            file:text-sm file:font-medium placeholder:text-neutral-400 dark:placeholder-text-neutral-600 
+            focus-visible:outline-none focus-visible:ring-[2px]  focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600
+             disabled:cursor-not-allowed disabled:opacity-50
+             dark:shadow-[0px_0px_1px_1px_var(--neutral-700)]
+             group-hover/input:shadow-none transition duration-400
+             `,
+              // className
+            )}
+            >
+              <option value="">Please select one…</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+              <option value="non-binary">Non-Binary</option>
+              <option value="other">Other</option>
+              <option value="Prefer not to answer">Perfer not to Answer</option>
+            </select>
+            {/* <Input
               id="gender"
               name="gender"
               type="text"
               value={formState.gender}
               onChange={handleChange}
-            />
+            /> */}
           </LabelInputContainer>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="phoneNumber">Phone Number</Label>
