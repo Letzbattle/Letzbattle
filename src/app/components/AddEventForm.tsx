@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import LabelInputContainer from "@/components/ui/LabelInputContainer";
 import BottomGradient from "@/components/ui/BottomGradient";
+import axios from "axios";
 
 const AddEventForm = () => {
 
@@ -34,11 +35,45 @@ const eventSchema = z.object({
     entryFees: "",
     prize: "",
     seatsLeft: "",
+    gameName: "",
+    isopen: true,
+    expired: false,
+    image: "",
   });
   const { post } = useApi();
   const router = useRouter();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  const [imagePreview, setImagePreview] = useState(""); // For previewing the uploaded image
+  const [imageFile, setImageFile] = useState<File | null>(null); // For storing the file before upload
+  const [uploading, setUploading] = useState(false); // For showing loading state during upload
+
+   // Upload the image to Cloudinary
+   const uploadImage = async () => {
+    if (!imageFile) {
+      return null;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "p5c4mirg"); // Replace with your Cloudinary upload preset dyxvo8jxn
+    formData.append("cloud_name", "dyxvo8jxn");
+
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dyxvo8jxn/image/upload`, // Replace with your Cloudinary cloud name
+        formData
+      );
+      setUploading(false);
+      return response.data.secure_url; // Return the uploaded image URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setUploading(false);
+      return null;
+    }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEventData({
@@ -47,8 +82,28 @@ const eventSchema = z.object({
     });
   };
 
+  // Handle file input change
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+      setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const imageUrl = await uploadImage();
+
+    if (!imageUrl) {
+      setError("Image upload failed");
+      return;
+    }
+
+    const imageData = {
+      ...eventData,
+      image: imageUrl, // Use the uploaded image URL
+    };
     // const formattedData = {
     //   ...eventData,
     //   entryFees: parseInt(eventData.entryFees, 10),
@@ -57,10 +112,10 @@ const eventSchema = z.object({
     // };
      // Attempt to parse and validate the data using the Zod schema
     const parsedData = {
-      ...eventData,
-      entryFees: Number(eventData.entryFees),
+      ...imageData,
+      entryFees: Number(imageData.entryFees),
       // prize: Number(eventData.prize),
-      seatsLeft: Number(eventData.seatsLeft),
+      seatsLeft: Number(imageData.seatsLeft),
     };
 
     try {
@@ -94,7 +149,7 @@ const eventSchema = z.object({
   };
 
   return (
-    <div className="bg-black h-screen flex justify-center items-center">
+    <div className="bg-black h-full flex justify-center items-center">
       <Particles
         className="fixed inset-0 h-full w-full"
         quantity={500}
@@ -129,6 +184,39 @@ const eventSchema = z.object({
               />
             </LabelInputContainer>
           </div>
+
+          <div className="mb-4">
+            <LabelInputContainer>
+              <Label
+                htmlFor="gameName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Game Name
+              </Label>
+              <Input
+                type="gameName"
+                id="gameName"
+                name="gameName"
+                value={eventData.gameName}
+                onChange={handleChange}
+                className="p-2 block w-full border border-gray-300 rounded-md"
+                required
+              />
+            </LabelInputContainer>
+          </div>
+          <div>
+        <label>Upload Banner</label>
+        <input type="file" accept="image/*" onChange={handleFileChange} />
+        {imagePreview && (
+          <div>
+            <img
+              src={imagePreview}
+              alt="Selected"
+              className="w-full h-auto mt-2"
+            />
+          </div>
+        )}
+      </div>
 
           <div className="mb-4">
             <LabelInputContainer>
@@ -206,6 +294,7 @@ const eventSchema = z.object({
               />
             </LabelInputContainer>
           </div>
+          
 
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"

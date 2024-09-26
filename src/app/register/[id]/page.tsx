@@ -1,4 +1,4 @@
-import RegisterEvent from '@/components/RegisterEvent'
+import RegisterEvent from '@/app/components/RegisterEvent'
 import React from 'react'
 
 const page = ({params}:any) => {

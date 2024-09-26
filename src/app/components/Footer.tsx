@@ -11,34 +11,34 @@ const Footer = () => {
         },
         {
             title: "About",
-            href: "/about",
+            href: "/aboutUs",
         },
         {
             title: "Privacy Policy",
             href: "/privacy-policy",
         },
         {
-            title: "Terms of Service",
-            href: "/terms-of-service",
+            title: "Terms of Use",
+            href: "/termsOfUse",
         },
         {
-            title: "Questions",
-            href: "/questions",
+            title: "Contact Us",
+            href: "/contactUs",
         },
     ];
     return (
-        <footer className="relative block overflow-hidden border-t border-solid border-white/30 py-20">
+        <footer className="bg-black">
             <div className="container mx-auto px-4">
-                <ul className="flex flex-wrap items-center justify-center gap-3">
+                <ul className="flex flex-wrap items-center justify-center gap-3 text-white">
                     {items.map(item => (
-                        <li key={item.href}>
+                        <li key={item.href} className="z-50">
                             <Link href={item.href}>{item.title}</Link>
                         </li>
                     ))}
                 </ul>
-                <div className="mt-4 text-center">&copy; {new Date().getFullYear()} Riverpod</div>
+                <div className="mt-4 text-center text-white">&copy; {new Date().getFullYear()} WarZoneX</div>
             </div>
-            <AnimatedGridPattern
+            {/* <AnimatedGridPattern
                 numSquares={30}
                 maxOpacity={0.4}
                 duration={3}
@@ -47,9 +47,12 @@ const Footer = () => {
                     "[mask-image:radial-gradient(3000px_circle_at_center,white,transparent)]",
                     "inset-y-[-50%] h-[200%] skew-y-6"
                 )}
-            />
+            /> */}
         </footer>
     );
 };
 
 export default Footer;
+
+
+
