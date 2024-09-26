@@ -102,7 +102,7 @@ const RegisterEvent = (params: any) => {
           await post(`/api/events/${params.params.id}/participants`, formState);
 
           setSuccess("Payment successful and verified!");
-
+router.push('/success')
           // Proceed with further actions, like updating user data or redirecting
         } catch (error) {
           setError("Payment verification failed");
