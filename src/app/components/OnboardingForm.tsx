@@ -89,7 +89,7 @@ export function OnboardingForm() {
       //   setError("Something went wrong. Please try again.");
       // }
 
-      const response = await post("/api/onboard", parsedData);
+      const response = await post("/api/user/onboard", parsedData);
 
       if (response) {
         setSuccess("Onboarded successfully!");
