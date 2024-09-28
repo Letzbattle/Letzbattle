@@ -22,7 +22,7 @@ export function OnboardingForm() {
   const onboardFormSchema = z.object({
     name: z.string().min(2, { message: "Name is required" }),
     age: z.number().min(12, { message: "Age must be at least 12" }),
-    gender: z.string().min(1,{ message: "Gender is required" }),
+    gender: z.string().min(1, { message: "Gender is required" }),
     // phoneNumber:z.string().min(10,{message:"Phone number must be at least 10 digits"}),
     phoneNumber: z
       .string()
@@ -38,6 +38,7 @@ export function OnboardingForm() {
     phoneNumber: "",
     bgmiId: "",
     instagramId: "",
+    image: "",
   });
 
   const [success, setSuccess] = useState("");
@@ -47,6 +48,44 @@ export function OnboardingForm() {
   const router = useRouter();
 
   const { data: session, update } = useSession();
+
+  const [imagePreview, setImagePreview] = useState(""); // For previewing the uploaded image
+  const [imageFile, setImageFile] = useState<File | null>(null); // For storing the file before upload
+  const [uploading, setUploading] = useState(false); // For showing loading state during upload
+
+  // Upload the image to Cloudinary
+  const uploadImage = async () => {
+    if (!imageFile) {
+      return null;
+    }
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "p5c4mirg"); // Replace with your Cloudinary upload preset dyxvo8jxn
+    formData.append("cloud_name", "dyxvo8jxn");
+
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/dyxvo8jxn/image/upload`, // Replace with your Cloudinary cloud name
+        formData
+      );
+      setUploading(false);
+      return response.data.secure_url; // Return the uploaded image URL
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setUploading(false);
+      return null;
+    }
+  };
+
+  // Handle file input change
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+      setImagePreview(URL.createObjectURL(e.target.files[0]));
+    }
+  };
 
   // Set up the headers with the JWT token
   //  const headers = {
@@ -68,9 +107,21 @@ export function OnboardingForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const imageUrl = await uploadImage();
+
+    if (!imageUrl) {
+      setError("Image upload failed");
+      return;
+    }
+
+    const imageData = {
+      ...formState,
+      image: imageUrl, // Use the uploaded image URL
+    };
     // const validation=onboardFormSchema.safeParse(formState);
     const parsedData = {
-      ...formState,
+      ...imageData,
       // entryFees: Number(eventData.entryFees),
       // // prize: Number(eventData.prize),
       // seatsLeft: Number(eventData.seatsLeft),
@@ -89,7 +140,7 @@ export function OnboardingForm() {
       //   setError("Something went wrong. Please try again.");
       // }
 
-      const response = await post("/api/onboard", parsedData);
+      const response = await post("/api/user/onboard", parsedData);
 
       if (response) {
         setSuccess("Onboarded successfully!");
@@ -117,6 +168,7 @@ export function OnboardingForm() {
         phoneNumber: "",
         bgmiId: "",
         instagramId: "",
+        image: "",
       });
 
       // Update user isOnboarded to true via the user API
@@ -142,7 +194,7 @@ export function OnboardingForm() {
   };
   return (
     <div
-      className="bg-black h-screen flex justify-center items-center"
+      className="bg-black h-full flex justify-center items-center"
       // className="bg-black sm:h-full min-[320px]:h-screen "
     >
       <Particles
@@ -190,19 +242,37 @@ export function OnboardingForm() {
               />
             </LabelInputContainer>
           </div>
+          <div className="mb-4">
+            <LabelInputContainer>
+              <Label>Upload Profile Image</Label>
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+              {imagePreview && (
+                <div>
+                  <img
+                    src={imagePreview}
+                    alt="Selected"
+                    className="w-full h-auto mt-2"
+                  />
+                </div>
+              )}
+            </LabelInputContainer>
+          </div>
           <LabelInputContainer className="mb-4">
             <Label htmlFor="gender">Gender</Label>
-            <select name="gender" id="gender" onChange={handleChange}
-            className={cn(
-              `flex h-10 w-full border-none bg-gray-50 dark:bg-zinc-800 text-black dark:text-white shadow-input rounded-md px-3 py-2 text-sm  file:border-0 file:bg-transparent 
+            <select
+              name="gender"
+              id="gender"
+              onChange={handleChange}
+              className={cn(
+                `flex h-10 w-full border-none bg-gray-50 dark:bg-zinc-800 text-black dark:text-white shadow-input rounded-md px-3 py-2 text-sm  file:border-0 file:bg-transparent 
             file:text-sm file:font-medium placeholder:text-neutral-400 dark:placeholder-text-neutral-600 
             focus-visible:outline-none focus-visible:ring-[2px]  focus-visible:ring-neutral-400 dark:focus-visible:ring-neutral-600
              disabled:cursor-not-allowed disabled:opacity-50
              dark:shadow-[0px_0px_1px_1px_var(--neutral-700)]
              group-hover/input:shadow-none transition duration-400
-             `,
-              // className
-            )}
+             `
+                // className
+              )}
             >
               <option value="">Please select one…</option>
               <option value="female">Female</option>
