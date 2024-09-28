@@ -11,23 +11,25 @@ import BottomGradient from "@/components/ui/BottomGradient";
 import axios from "axios";
 
 const AddEventForm = () => {
-
   // Define Zod schema for validation
-const eventSchema = z.object({
-  name: z.string().min(1, { message: "Event name is required" }),
-  date: z.string().refine((value) => !isNaN(Date.parse(value)), {
-    message: "Invalid date",
-  }),
-  entryFees: z.number().min(0, { message: "Entry fees must be a positive number" }),
-  prize: z
-  .string()
-  .refine((value) => {
-    // Extract numeric part from the string and check if it's a positive number
-    const numericValue = parseFloat(value.replace(/[^\d.-]/g, ""));
-    return numericValue > 0;
-  }, { message: "Prize must be a positive number" }),
-  seatsLeft: z.number().min(1, { message: "Seats left must be at least 1" }),
-});
+  const eventSchema = z.object({
+    name: z.string().min(1, { message: "Event name is required" }),
+    date: z.string().refine((value) => !isNaN(Date.parse(value)), {
+      message: "Invalid date",
+    }),
+    entryFees: z
+      .number()
+      .min(0, { message: "Entry fees must be a positive number" }),
+    prize: z.string().refine(
+      (value) => {
+        // Extract numeric part from the string and check if it's a positive number
+        const numericValue = parseFloat(value.replace(/[^\d.-]/g, ""));
+        return numericValue > 0;
+      },
+      { message: "Prize must be a positive number" }
+    ),
+    seatsLeft: z.number().min(1, { message: "Seats left must be at least 1" }),
+  });
 
   const [eventData, setEventData] = useState({
     name: "",
@@ -49,8 +51,8 @@ const eventSchema = z.object({
   const [imageFile, setImageFile] = useState<File | null>(null); // For storing the file before upload
   const [uploading, setUploading] = useState(false); // For showing loading state during upload
 
-   // Upload the image to Cloudinary
-   const uploadImage = async () => {
+  // Upload the image to Cloudinary
+  const uploadImage = async () => {
     if (!imageFile) {
       return null;
     }
@@ -110,7 +112,7 @@ const eventSchema = z.object({
     //   seatsLeft: parseInt(eventData.seatsLeft, 10),
     //   date: new Date(eventData.date).toISOString(), // Ensure date is in ISO format (DateTime)
     // };
-     // Attempt to parse and validate the data using the Zod schema
+    // Attempt to parse and validate the data using the Zod schema
     const parsedData = {
       ...imageData,
       entryFees: Number(imageData.entryFees),
@@ -204,19 +206,21 @@ const eventSchema = z.object({
               />
             </LabelInputContainer>
           </div>
-          <div>
-        <label>Upload Banner</label>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        {imagePreview && (
-          <div>
-            <img
-              src={imagePreview}
-              alt="Selected"
-              className="w-full h-auto mt-2"
-            />
+          <div className="mb-4">
+            <LabelInputContainer>
+              <Label>Upload Banner</Label>
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+              {imagePreview && (
+                <div>
+                  <img
+                    src={imagePreview}
+                    alt="Selected"
+                    className="w-full h-auto mt-2"
+                  />
+                </div>
+              )}
+            </LabelInputContainer>
           </div>
-        )}
-      </div>
 
           <div className="mb-4">
             <LabelInputContainer>
@@ -294,7 +298,6 @@ const eventSchema = z.object({
               />
             </LabelInputContainer>
           </div>
-          
 
           <button
             className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
