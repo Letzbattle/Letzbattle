@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { CardBody, CardContainer, CardItem } from "../../components/ui/3d-card";
 import Link from "next/link";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 interface Event {
   id: string;
@@ -16,13 +17,14 @@ interface Event {
   isopen: boolean,
   expired: boolean,
   image: string,
+  Participant:[]
   // Add other properties if available
 }
 
 export function AllEvents() {
   const [Loading, setLoading] = useState<boolean>(false);
   const [allEvents, setAllEvents] = useState([]);
-
+const {data:user}=useSession()
   useEffect(() => {
     const getAllEvents = async () => {
       setLoading(true);
@@ -74,6 +76,14 @@ export function AllEvents() {
               className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
             >
               {/* Hover over this card to unleash the power of CSS perspective */}
+             Number of Participants: {event.Participant.length}
+            </CardItem>
+            <CardItem
+              as="p"
+              translateZ="60"
+              className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+            >
+              {/* Hover over this card to unleash the power of CSS perspective */}
               Entry Fees Per Team: {event.entryFees}
             </CardItem>
             <CardItem translateZ="100" className="w-full mt-4">
@@ -86,20 +96,20 @@ export function AllEvents() {
               />
             </CardItem>
             <div className="flex justify-between items-center mt-20">
-              <CardItem
+            {event.Participant.some((participant:any)=>participant.userId==user?.user.id)?"Registered": <CardItem
                 translateZ={20}
                 as={Link}
                 href={`/register/${event.id}`}
                 className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
               >
                   Register now →
-              </CardItem>
+              </CardItem>}
               <CardItem
                 translateZ={20}
                 as="button"
                 className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
               >
-                Slots Left: {event.seatsLeft}
+                Slots Left: {event.seatsLeft-event.Participant.length}
               </CardItem>
             </div>
           </CardBody>
