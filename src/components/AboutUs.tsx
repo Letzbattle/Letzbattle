@@ -4,7 +4,7 @@ import Particles from "./magicui/particles";
 
 const AboutUs = () => {
   return (
-    <div className="bg-black text-white">
+    <div className="bg-black h-full flex justify-center items-center">
        <Particles
         className="fixed inset-0 h-full w-full"
         quantity={500}
@@ -12,8 +12,8 @@ const AboutUs = () => {
         color="#ffffff"
         refresh
       />
-    <div className="container mx-auto p-8 z-10">
-      <h1 className="text-4xl font-bold text-center mb-10">About Us</h1>
+    <div className="container mx-auto p-8 z-10 text-white">
+      <h1 className="text-4xl font-bold text-center my-20">About Us</h1>
       
       <div className="max-w-4xl mx-auto text-lg leading-relaxed space-y-6">
         <p>
@@ -41,7 +41,7 @@ const AboutUs = () => {
 
       <div className="text-center mt-10">
         <h3 className="text-2xl font-semibold mb-4">Ready to Join the Action?</h3>
-        <a href="/events" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
+        <a href="/" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded">
           Explore Upcoming Events
         </a>
       </div>

@@ -11,23 +11,25 @@ import BottomGradient from "@/components/ui/BottomGradient";
 import axios from "axios";
 
 const AddEventForm = () => {
-
   // Define Zod schema for validation
-const eventSchema = z.object({
-  name: z.string().min(1, { message: "Event name is required" }),
-  date: z.string().refine((value) => !isNaN(Date.parse(value)), {
-    message: "Invalid date",
-  }),
-  entryFees: z.number().min(0, { message: "Entry fees must be a positive number" }),
-  prize: z
-  .string()
-  .refine((value) => {
-    // Extract numeric part from the string and check if it's a positive number
-    const numericValue = parseFloat(value.replace(/[^\d.-]/g, ""));
-    return numericValue > 0;
-  }, { message: "Prize must be a positive number" }),
-  seatsLeft: z.number().min(1, { message: "Seats left must be at least 1" }),
-});
+  const eventSchema = z.object({
+    name: z.string().min(1, { message: "Event name is required" }),
+    date: z.string().refine((value) => !isNaN(Date.parse(value)), {
+      message: "Invalid date",
+    }),
+    entryFees: z
+      .number()
+      .min(0, { message: "Entry fees must be a positive number" }),
+    prize: z.string().refine(
+      (value) => {
+        // Extract numeric part from the string and check if it's a positive number
+        const numericValue = parseFloat(value.replace(/[^\d.-]/g, ""));
+        return numericValue > 0;
+      },
+      { message: "Prize must be a positive number" }
+    ),
+    seatsLeft: z.number().min(1, { message: "Seats left must be at least 1" }),
+  });
 
   const [eventData, setEventData] = useState({
     name: "",
@@ -44,13 +46,14 @@ const eventSchema = z.object({
   const router = useRouter();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [loader, setLoader] = useState(false);
 
   const [imagePreview, setImagePreview] = useState(""); // For previewing the uploaded image
   const [imageFile, setImageFile] = useState<File | null>(null); // For storing the file before upload
   const [uploading, setUploading] = useState(false); // For showing loading state during upload
 
-   // Upload the image to Cloudinary
-   const uploadImage = async () => {
+  // Upload the image to Cloudinary
+  const uploadImage = async () => {
     if (!imageFile) {
       return null;
     }
@@ -92,6 +95,7 @@ const eventSchema = z.object({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoader(true);
 
     const imageUrl = await uploadImage();
 
@@ -110,7 +114,7 @@ const eventSchema = z.object({
     //   seatsLeft: parseInt(eventData.seatsLeft, 10),
     //   date: new Date(eventData.date).toISOString(), // Ensure date is in ISO format (DateTime)
     // };
-     // Attempt to parse and validate the data using the Zod schema
+    // Attempt to parse and validate the data using the Zod schema
     const parsedData = {
       ...imageData,
       entryFees: Number(imageData.entryFees),
@@ -132,9 +136,11 @@ const eventSchema = z.object({
       const response = await post("/api/events", formattedData);
 
       if (response) {
+        setLoader(false);
         setSuccess("Event created successfully!");
         setError("");
-        // router.push('/events');
+
+        router.push('/');
       }
     } catch (validationError: any) {
       setSuccess(""); // Clear any previous success message
@@ -204,19 +210,21 @@ const eventSchema = z.object({
               />
             </LabelInputContainer>
           </div>
-          <div>
-        <label>Upload Banner</label>
-        <input type="file" accept="image/*" onChange={handleFileChange} />
-        {imagePreview && (
-          <div>
-            <img
-              src={imagePreview}
-              alt="Selected"
-              className="w-full h-auto mt-2"
-            />
+          <div className="mb-4">
+            <LabelInputContainer>
+              <Label>Upload Banner</Label>
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+              {imagePreview && (
+                <div>
+                  <img
+                    src={imagePreview}
+                    alt="Selected"
+                    className="w-full h-auto mt-2"
+                  />
+                </div>
+              )}
+            </LabelInputContainer>
           </div>
-        )}
-      </div>
 
           <div className="mb-4">
             <LabelInputContainer>
@@ -294,15 +302,42 @@ const eventSchema = z.object({
               />
             </LabelInputContainer>
           </div>
-          
 
-          <button
-            className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
-            type="submit"
-          >
-            Create Event &rarr;
-            <BottomGradient />
-          </button>
+          {loader === true ? (
+            <button
+              type="button"
+              className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+              disabled
+            >
+              {/* Loading spinner SVG */}
+              <svg
+                aria-hidden="true"
+                className="inline w-5 h-5 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-white"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+              Processing...
+              <BottomGradient />
+            </button>
+          ) : (
+            <button
+              className="bg-gradient-to-br relative group/btn from-black dark:from-zinc-900 dark:to-zinc-900 to-neutral-600 block dark:bg-zinc-800 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+              type="submit"
+            >
+              Create Event &rarr;
+              <BottomGradient />
+            </button>
+          )}
         </form>
       </div>
     </div>
