@@ -1,26 +1,28 @@
 "use client";
 import Particles from "@/components/magicui/particles";
+import { useApi } from "@/hooks/useApi";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function AdminEvents() {
   const [allEvents, setAllEvents] = useState([]);
   const router = useRouter();
+  const {get}=useApi()
+  const session=useSession()
 
   useEffect(() => {
     const getAllEvents = async () => {
       try {
-        const res = await axios.get(
-          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events"
-        );
-        setAllEvents(res.data.events);
+        const res = await get("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/my-events");
+        setAllEvents(res?.data.events);
       } catch (err) {
         console.error(err);
       }
     };
     getAllEvents();
-  }, []);
+  }, [session]);
 
   return (
     <div className="p-6 min-h-screen bg-black dark:bg-gray-900">
