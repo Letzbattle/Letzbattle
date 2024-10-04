@@ -5,6 +5,7 @@ import Particles from "@/components/magicui/particles";
 import ShimmerButton from "@/components/magicui/shimmer-button";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const slugs = [
@@ -64,6 +65,8 @@ const slugs = [
 
 const HeroSectionHeader = () => {
   const [session, setSession] = useState<any>(null);
+  const router = useRouter();
+
 
   // Fetch session data when the component mounts
   useEffect(() => {
@@ -123,8 +126,9 @@ const HeroSectionHeader = () => {
                 {session ? (
                   <button
                     className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-white dark:border-white/[0.2] dark:text-white"
+                    onClick={() => router.push(`/admin/addEvent`)}
                   >
-                    <span>War Begins Now</span>
+                    <span>Create Event</span>
                     <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   </button>
                 ) : (
