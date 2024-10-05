@@ -77,7 +77,7 @@ const Footer: React.FC = () => {
         color="#ffffff"
         refresh
       /> */}
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="md:flex md:justify-between md:space-x-8 ">
           <div className="mb-6 md:mb-0 z-20">
             <a href="#" className="flex items-center">
