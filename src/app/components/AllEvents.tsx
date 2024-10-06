@@ -108,7 +108,7 @@ const {data:user}=useSession()
                 <CardItem
                   translateZ={20}
                   as={Link}
-                  href={`/register/${event.id}`}
+                  href={user?`/register/${event.id}`:'/login'}
                   className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
                 >
                   Register now →
