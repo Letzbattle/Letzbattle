@@ -90,8 +90,8 @@ const HeroSectionHeader = () => {
       <div className="relative z-10 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex items-center justify-center">
           <div className="space-y-4 text-center">
-            <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center text-7xl font-bold leading-none tracking-tighter text-transparent">
-              WarZoneX
+            <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center md:text-7xl text-4xl font-bold leading-none tracking-tighter text-transparent">
+              NexgenBattles
             </h1>
             <p className="text-center text-white text-xl font-bold leading-none tracking-tighter">
               Unleash Your True Potential: Compete, Learn, and Conquer!
@@ -123,15 +123,15 @@ const HeroSectionHeader = () => {
                     <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   </Link>
                 )} */}
-                {session ? (
+                {/* {session ? ( */}
                   <button
                     className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-white dark:border-white/[0.2] dark:text-white"
-                    onClick={() => router.push(`/admin/addEvent`)}
+                    onClick={() => session?router.push(`/admin/addEvent`):router.push(`/login`)}
                   >
                     <span>Create Event</span>
                     <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                   </button>
-                ) : (
+                {/* ) : (
                   <>
                     <Link
                       href="/login"
@@ -141,7 +141,7 @@ const HeroSectionHeader = () => {
                       <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
                     </Link>
                   </>
-                )}
+                )} */}
               </>
               {/* )} */}
             </div>
