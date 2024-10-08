@@ -1,5 +1,5 @@
 
-import RefundAndCancellation from '@/components/Shipping'
+import RefundAndCancellation from '@/components/CancellationAndRefund'
 import React from 'react'
 
 const page = () => {
