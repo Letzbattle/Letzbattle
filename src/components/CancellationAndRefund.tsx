@@ -51,12 +51,12 @@ const RefundAndCancellation = () => {
             <li>
               <strong>Cancellation Before 24 Hours of Event Start</strong>: A
               full refund will be issued for cancellations made at least 24
-              hours prior to the event's start time.
+              hours prior to the event&apos;s start time.
             </li>
             <li>
               <strong>Cancellation Within 24 Hours of Event Start</strong>: No
               refunds will be issued for cancellations made within 24 hours of
-              the event's start time.
+              the event&apos;s start time.
             </li>
           </ul>
 
@@ -79,7 +79,7 @@ const RefundAndCancellation = () => {
           </h2>
           <p>
             NexGen Battles is not responsible for technical issues on the
-            participant’s end, such as poor internet connection, device failure,
+            participant&apos;s end, such as poor internet connection, device failure,
             or inability to log in. Refunds will not be issued in these cases.
           </p>
 
