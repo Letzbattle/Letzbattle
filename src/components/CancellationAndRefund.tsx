@@ -75,7 +75,7 @@ const RefundAndCancellation = () => {
           </p>
 
           <h2 className="text-3xl font-semibold mt-6 mb-2">
-            Technical Issues on Participant's End
+            Technical Issues on Participant&apos;s End
           </h2>
           <p>
             NexGen Battles is not responsible for technical issues on the
