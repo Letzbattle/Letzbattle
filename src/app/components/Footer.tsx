@@ -171,6 +171,14 @@ const Footer: React.FC = () => {
                     Team
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/shipping"
+                    className="text-base text-gray-500 hover:text-cyan-500"
+                  >
+                    Shipping
+                  </Link>
+                </li>
               </ul>
             </div>
 
@@ -209,6 +217,14 @@ const Footer: React.FC = () => {
                     className="text-base text-gray-500 hover:text-cyan-500"
                   >
                     Terms
+                  </Link>
+                </li>
+                 <li>
+                  <Link
+                    href="/cancellation"
+                    className="text-base text-gray-500 hover:text-cyan-500"
+                  >
+                    Cancellation and refund
                   </Link>
                 </li>
               </ul>
