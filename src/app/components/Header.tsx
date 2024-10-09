@@ -12,8 +12,8 @@ export default function Header() {
             icon: <IconHome className="h-4 w-4 text-neutral-500 dark:text-white" />,
         },
         {
-            name: "Questions",
-            link: "/questions",
+            name: "Profile",
+            link: "/profile",
             icon: <IconWorldQuestion className="h-4 w-4 text-neutral-500 dark:text-white" />,
         },
     ];
