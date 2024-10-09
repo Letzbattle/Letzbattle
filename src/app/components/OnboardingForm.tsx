@@ -94,7 +94,7 @@ export function OnboardingForm() {
   //   "Content-Type": "application/json", // Add default content type
   // };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name === "age") {
       setFormState({ ...formState, age: parseInt(value) });
@@ -186,6 +186,7 @@ export function OnboardingForm() {
       // );
     } catch (validationError: any) {
       setSuccess(""); // Clear any previous success message
+      setLoader(false);
       if (validationError instanceof z.ZodError) {
         // If it's a Zod error, extract the first error message and display it
         setError(validationError.errors[0].message);
