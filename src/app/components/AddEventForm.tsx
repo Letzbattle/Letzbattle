@@ -9,14 +9,16 @@ import { Label } from "@/components/ui/label";
 import LabelInputContainer from "@/components/ui/LabelInputContainer";
 import BottomGradient from "@/components/ui/BottomGradient";
 import axios from "axios";
+import { cn } from "@/utils/cn";
 
 const AddEventForm = () => {
   // Define Zod schema for validation
   const eventSchema = z.object({
     name: z.string().min(1, { message: "Event name is required" }),
-    date: z.string().refine((value) => !isNaN(Date.parse(value)), {
-      message: "Invalid date",
-    }),
+    // date: z.string().refine((value) => !isNaN(Date.parse(value)), {
+    //   message: "Invalid date",
+    // }),
+    date: z.string().nonempty({ message: "Date and time are required" }),
     entryFees: z
       .number()
       .min(0, { message: "Entry fees must be a positive number" }),
@@ -34,6 +36,7 @@ const AddEventForm = () => {
   const [eventData, setEventData] = useState({
     name: "",
     date: "",
+    time: "",
     entryFees: "",
     prize: "",
     seatsLeft: "",
@@ -41,6 +44,7 @@ const AddEventForm = () => {
     isopen: true,
     expired: false,
     image: "",
+    eventType: "",
   });
   const { post } = useApi();
   const router = useRouter();
@@ -78,7 +82,9 @@ const AddEventForm = () => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setEventData({
       ...eventData,
       [e.target.name]: e.target.value,
@@ -101,6 +107,7 @@ const AddEventForm = () => {
 
     if (!imageUrl) {
       setError("Image upload failed");
+      setLoader(false);
       return;
     }
 
@@ -123,13 +130,15 @@ const AddEventForm = () => {
     };
 
     try {
-      eventSchema.parse(parsedData); // This will throw if validation fails
+      const combinedDateTime = `${parsedData.date} ${parsedData.time}`;
+      eventSchema.parse({ ...parsedData, date: combinedDateTime }); // This will throw if validation fails
 
       const formattedData = {
         ...parsedData,
+        date: combinedDateTime,
         // entryFees: parseInt(eventData.entryFees, 10),
         // seatsLeft: parseInt(eventData.seatsLeft, 10),
-        date: new Date(parsedData.date).toISOString(), // Ensure date is in ISO format
+        // date: new Date(parsedData.date).toISOString(), // Ensure date is in ISO format
       };
 
       // Call the API to create the event
@@ -140,10 +149,11 @@ const AddEventForm = () => {
         setSuccess("Event created successfully!");
         setError("");
 
-        router.push('/');
+        router.push("/");
       }
     } catch (validationError: any) {
       setSuccess(""); // Clear any previous success message
+      setLoader(false);
       if (validationError instanceof z.ZodError) {
         // If it's a Zod error, extract the first error message and display it
         setError(validationError.errors[0].message);
@@ -212,6 +222,30 @@ const AddEventForm = () => {
           </div>
           <div className="mb-4">
             <LabelInputContainer>
+              <Label
+                htmlFor="eventType"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Event Type
+              </Label>
+              <select
+                id="eventType"
+                name="eventType"
+                value={eventData.eventType} // Correctly setting eventType value
+                onChange={handleChange}
+                className={cn(
+                  "flex h-10 w-full border-none bg-gray-50 dark:bg-zinc-800 text-black dark:text-white shadow-input rounded-md px-3 py-2 text-sm"
+                )}
+                required
+              >
+                <option value="">Please select one…</option>
+                <option value="SCRIMS">Scrims </option>
+                <option value="TOURNAMENT">Tournament</option>
+              </select>
+            </LabelInputContainer>
+          </div>
+          <div className="mb-4">
+            <LabelInputContainer>
               <Label>Upload Banner</Label>
               <Input type="file" accept="image/*" onChange={handleFileChange} />
               {imagePreview && (
@@ -241,6 +275,26 @@ const AddEventForm = () => {
                 value={eventData.date}
                 onChange={handleChange}
                 className="p-2 block w-full border border-gray-300 rounded-md"
+                required
+              />
+            </LabelInputContainer>
+          </div>
+
+          {/* Time Input */}
+          <div className="mb-4">
+            <LabelInputContainer>
+              <Label
+                htmlFor="time"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Event Time
+              </Label>
+              <Input
+                type="time"
+                id="time"
+                name="time"
+                value={eventData.time}
+                onChange={handleChange}
                 required
               />
             </LabelInputContainer>
