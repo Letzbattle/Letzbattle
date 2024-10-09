@@ -69,7 +69,7 @@ import Particles from "@/components/magicui/particles";
 
 const Footer: React.FC = () => {
   return (
-    <footer className=" bg-black text-white py-8 w-screen">
+    <footer className=" bg-black text-white py-8 w-full">
       {/* <Particles
         className="fixed inset-0 h-full w-full"
         quantity={500}
