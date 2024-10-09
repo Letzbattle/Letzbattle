@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { FloatingNav } from "@/components/ui/floating-navbar";
-import { IconHome, IconMessage, IconWorldQuestion } from "@tabler/icons-react";
+import { IconHome, IconMessage, IconWorldQuestion,IconUser } from "@tabler/icons-react";
 
 export default function Header() {
 
@@ -14,7 +14,7 @@ export default function Header() {
         {
             name: "Profile",
             link: "/profile",
-            icon: <IconWorldQuestion className="h-4 w-4 text-neutral-500 dark:text-white" />,
+            icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
         },
     ];
 
