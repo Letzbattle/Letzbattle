@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
             <p className="mt-4 text-gray-400">
               Next-generation battles for modern gamers.
             </p>
-            <div className="flex mt-4 space-x-4">
+            {/* <div className="flex mt-4 space-x-4">
               <a
                 href="https://www.facebook.com/"
                 className="text-gray-500 hover:text-cyan-500"
@@ -130,7 +130,7 @@ const Footer: React.FC = () => {
                 <span className="sr-only">YouTube</span>
                 <FaYoutube size={20} />
               </a>
-            </div>
+            </div> */}
           </div>
 
           <div className="md:flex md:justify-between md:gap-14 z-20">
