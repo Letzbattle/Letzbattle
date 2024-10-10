@@ -6,8 +6,8 @@ import { Input } from "@/components/ui/input";
 import LabelInputContainer from "@/components/ui/LabelInputContainer";
 import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
-import { useApi } from "@/hooks/useApi";
 import ButtonLoader from "@/components/ButtonLoader";
+import axios from "axios";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -18,7 +18,6 @@ const ContactUs = () => {
 
   const [submitted, setSubmitted] = useState(false);
   const [loader, setLoader] = useState(false);
-  const { post } = useApi();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -31,7 +30,7 @@ const ContactUs = () => {
     e.preventDefault();
     setLoader(true);
     try {
-      const response = await post("/api/user/contact", formData);
+      const response = await axios.post("/api/user/contact", formData);
       if (response) {
         setSubmitted(true);
         setLoader(false);
@@ -155,7 +154,12 @@ const ContactUs = () => {
 
         <div className="text-center text-white mt-12">
           <p>
-            Or call us at <span className="font-bold">1-800-123-4567</span>
+            Or call us at <span className="font-bold">8851840604</span>
+          </p>
+
+          <p className="mt-2">
+            Office Address:{" "}
+            <span className="font-bold">C-131, C-Block, Ramapark,New Delhi</span>
           </p>
         </div>
       </div>
