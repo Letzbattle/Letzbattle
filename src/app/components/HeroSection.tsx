@@ -41,7 +41,7 @@ export default async function HeroSection() {
             header={<HeroSectionHeader />}
             products={questions.documents.map(q => ({
                 title: q.title,
-                link: `/questions/${q.$id}/${(q.title)}`,
+                link: `/aboutUs`,
                 thumbnail: q.thumbnail,
             }))}
         />
