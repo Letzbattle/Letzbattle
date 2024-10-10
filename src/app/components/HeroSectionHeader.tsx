@@ -7,6 +7,7 @@ import { getSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const slugs = [
   "games",
@@ -65,6 +66,7 @@ const slugs = [
 
 const HeroSectionHeader = () => {
   const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
 
@@ -77,6 +79,12 @@ const HeroSectionHeader = () => {
 
     fetchSession();
   }, []);
+
+  const handleCreateEvent = () => {
+    setIsLoading(true); // Start loading
+    session?router.push(`/admin/addEvent`):router.push(`/login`)
+    // session ? router.push(`/admin/addEvent`) : router.push(`/login`);
+  };
 
   return (
     <div className="container mx-auto px-4">
@@ -91,7 +99,7 @@ const HeroSectionHeader = () => {
         <div className="flex items-center justify-center">
           <div className="space-y-4 text-center">
             <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center md:text-7xl text-4xl font-bold leading-none tracking-tighter text-transparent">
-              NexgenBattles
+              Nexgen Battles
             </h1>
             <p className="text-center text-white text-xl font-bold leading-none tracking-tighter">
               Unleash Your True Potential: Compete, Learn, and Conquer!
@@ -125,12 +133,18 @@ const HeroSectionHeader = () => {
                 )} */}
                 {/* {session ? ( */}
                   <button
-                    className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-white dark:border-white/[0.2] dark:text-white"
-                    onClick={() => session?router.push(`/admin/addEvent`):router.push(`/login`)}
-                  >
-                    <span>Create Event</span>
-                    <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                  </button>
+                className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm md:text-base font-medium text-white dark:border-white/[0.2] dark:text-white"
+                onClick={handleCreateEvent}
+                disabled={isLoading} // Disable button while loading
+              >
+                {isLoading ? (
+                  // Loader (spinner)
+                  <div className="flex justify-center items-center"><ClipLoader color="#fff" size={20} />&nbsp;&nbsp;Processing...</div>
+                ) : (
+                  <span>Create Event</span>
+                )}
+                <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+              </button>
                 {/* ) : (
                   <>
                     <Link
