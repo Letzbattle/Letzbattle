@@ -43,7 +43,7 @@ const TermsOfUse = () => {
             3. Limitation of Liability
           </h2>
           <p>
-            LetzBattle will not be held liable for any direct, indirect,
+            NexGen Battles will not be held liable for any direct, indirect,
             incidental, or consequential damages arising from the use of our
             platform.
           </p>
@@ -64,10 +64,10 @@ const TermsOfUse = () => {
             If you have any questions about these Terms of Use, please contact
             us at{" "}
             <a
-              href="mailto:Letzbattle.tech@gmail.com"
+              href="mailto:nexgenbattles.tech@gmail.com"
               className="text-blue-500 underline"
             >
-              Letzbattle.tech@gmail.com
+              nexgenbattles.tech@gmail.com
             </a>
             .
           </p>

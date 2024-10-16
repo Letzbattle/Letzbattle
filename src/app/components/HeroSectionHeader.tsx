@@ -11,7 +11,7 @@ import { ClipLoader } from "react-spinners";
 
 const slugs = [
   "games",
-  "pubg",
+  // "pubg",
   "garena free fire",
   "fortnite",
   "call of duty",
@@ -35,7 +35,7 @@ const slugs = [
   "destiny 2",
   "escape from tarkov",
   "sea of thieves",
-  "pubg mobile",
+  // "pubg mobile",
   "rules of survival",
   "free fire max",
   "android",
