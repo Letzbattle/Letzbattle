@@ -64,10 +64,10 @@ const ContactUs = () => {
           Have questions or feedback? We did love to hear from you! Fill out the
           form below or reach out directly at{" "}
           <a
-            href="mailto:Letzbattle.tech@gmail.com"
+            href="mailto:nexgenbattles.tech@gmail.com"
             className="text-blue-500 underline"
           >
-            Letzbattle.tech@gmail.com
+            nexgenbattles.tech@gmail.com
           </a>
           .
         </p>
