@@ -20,12 +20,12 @@ const AboutUs = () => {
         
 
 Welcome to Nexgenbattles, where sports enthusiasts unite to challenge, compete, and celebrate the spirit of athleticism!
-At Nexgenbattles, we believe that sports are more than just games; they're a way of life. Our platform was born out of a passion for sports and a desire to bring athletes and teams together like never before.
+At Nexgenbattles, we believe that sports are more than just games; they&apos;re a way of life. Our platform was born out of a passion for sports and a desire to bring athletes and teams together like never before.
         </p>
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Our Mission</h2>
         <p>
-        Our mission is simple: to create a vibrant and inclusive community for athletes of all levels. Whether you're a seasoned pro or just starting your sporting journey, Nexgenbattles is the place where you can connect, compete, and grow.ned professional or just getting started, there is a place for you in our community.
+        Our mission is simple: to create a vibrant and inclusive community for athletes of all levels. Whether you&apos;re a seasoned pro or just starting your sporting journey, Nexgenbattles is the place where you can connect, compete, and grow.ned professional or just getting started, there is a place for you in our community.
         </p>
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Why Choose Us?</h2>
