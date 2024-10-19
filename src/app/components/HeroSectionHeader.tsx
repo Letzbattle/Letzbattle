@@ -147,11 +147,11 @@ const HeroSectionHeader = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center">
+        {/* <div className="flex items-center justify-center">
           <div className="relative max-w-[32rem] overflow-hidden">
             <IconCloud iconSlugs={slugs} />
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

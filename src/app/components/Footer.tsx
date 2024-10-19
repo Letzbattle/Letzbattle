@@ -87,7 +87,7 @@ const Footer: React.FC = () => {
               </span>
             </a>
             <p className="mt-4 text-gray-400">
-              Next-generation battles for modern gamers.
+              Next-generation battles for modern athletes.
             </p>
             {/* <div className="flex mt-4 space-x-4">
               <a
