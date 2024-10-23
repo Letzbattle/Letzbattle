@@ -6,30 +6,30 @@ export default async function HeroSection() {
     const questions = {
         documents: [
             {
-                title: "cricket",
+                title: "BGMI",
                 $id: "1",
                 attachmentId: "react-guide",
-                thumbnail:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRku-G5mzCVk1bW7rE8s6ti6FYZQCKxMH15Ud6RU6cwDhqJ_1Vl9-e9jTSgu_9AYZZGMQ4&usqp=CAU"
+                thumbnail:"https://wallpaperaccess.com/full/6163684.jpg"
             },
             {
-                title: "Kabbadi",
+                title: "FreeFire",
                 $id: "2",
                 attachmentId: "js-guide",
-                thumbnail:"https://www.newsonair.gov.in/wp-content/uploads/2024/08/kabaddi-league.jpg"
+                thumbnail:"https://images.hdqwalls.com/download/garena-free-fire-4k-v8-2048x1152.jpg"
 
             },
             {
-                title: "Football",
+                title: "Valvorant",
                 $id: "3",
                 attachmentId: "css-guide",
-                thumbnail:"https://cdn.britannica.com/31/183231-050-8D8EB720/Carli-Lloyd-penalty-goal-semifinal-match-Germany-2015.jpg"
+                thumbnail:"https://global-img.gamergen.com/valorant-29-05-2020-key-art-1_0900953381.jpg"
 
             },
             {
-                title: "Arm Wrestling",
+                title: "Clash of clanes",
                 $id: "4",
                 attachmentId: "css-guide",
-                thumbnail:"https://designforceinc.com/wp-content/uploads/2016/03/world-armwrestling-league-branding-style-guide.jpg"
+                thumbnail:"https://assets-prd.ignimgs.com/2022/02/28/clash-of-clans-1646090932362.jpg"
 
             },
         ],
