@@ -210,7 +210,7 @@ export function OnboardingForm() {
       />
       <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black z-10">
         <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-          Welcome to LetzBattle
+          Welcome to Nexgenbattles
         </h2>
         {error && <p className="text-red-500 mb-4">{error}</p>}
         {success && <p className="text-green-500 mb-4">{success}</p>}

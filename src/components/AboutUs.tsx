@@ -17,12 +17,12 @@ const AboutUs = () => {
       
       <div className="max-w-4xl mx-auto text-lg leading-relaxed space-y-6">
         <p>
-          Welcome to <strong>LetzBattle</strong>, a community-driven platform where we organize thrilling eSports tournaments, scrims, and events. Our mission is to create opportunities for gamers to showcase their talents and connect with like-minded individuals in an exciting and competitive environment.
+          Welcome to <strong>Nexgen Battles</strong>, a community-driven platform where we organize thrilling eSports tournaments, scrims, and events. Our mission is to create opportunities for gamers to showcase their talents and connect with like-minded individuals in an exciting and competitive environment.
         </p>
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Our Mission</h2>
         <p>
-          At LetzBattle, we believe in providing fair competition for everyone, regardless of experience or skill level. Whether you are a seasoned professional or just getting started, there is a place for you in our community.
+          At Nexgen Battles, we believe in providing fair competition for everyone, regardless of experience or skill level. Whether you are a seasoned professional or just getting started, there is a place for you in our community.
         </p>
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Why Choose Us?</h2>
