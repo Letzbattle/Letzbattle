@@ -305,7 +305,7 @@ export function OnboardingForm() {
             />
           </LabelInputContainer>
           <LabelInputContainer className="mb-8">
-            <Label htmlFor="bgmiId">Game ID (Optional)</Label>
+            <Label htmlFor="bgmiId">Game (Optional)</Label>
             <Input
               id="bgmiId"
               name="bgmiId"

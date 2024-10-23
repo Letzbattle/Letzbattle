@@ -43,7 +43,7 @@ const TermsOfUse = () => {
             3. Limitation of Liability
           </h2>
           <p>
-            nexgenbattles will not be held liable for any direct, indirect,
+            NexGen Battles will not be held liable for any direct, indirect,
             incidental, or consequential damages arising from the use of our
             platform.
           </p>

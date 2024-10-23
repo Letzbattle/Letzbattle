@@ -35,7 +35,7 @@ const AboutUs = () => {
 
         <h2 className="text-3xl font-semibold mt-6 mb-2">Our Team</h2>
         <p>
-          Our team is made up of passionate gamers, developers, and event organizers who are dedicated to creating the best experience for our participants.
+          Our team is made up of passionate Athltetes, developers, and event organizers who are dedicated to creating the best experience for our participants.
         </p>
       </div>
 

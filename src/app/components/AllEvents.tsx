@@ -79,7 +79,7 @@ export function AllEvents() {
               : "bg-gray-300 text-gray-700 hover:bg-gray-400"
           }`}
         >
-          Scrims
+          Practice
         </button>
       </div>
 
@@ -175,12 +175,12 @@ export function AllEvents() {
                   >
                     {event.name}
                   </CardItem>
-                  <CardItem
+                  {/* <CardItem
                     translateZ={20}
                     className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-gradient-to-r from-orange-500 to-red-600 shadow-md hover:shadow-lg transform transition duration-300 hover:scale-105 uppercase absolute top-4 right-2"
                   >
                     {event.gameName}
-                  </CardItem>
+                  </CardItem> */}
                   <CardItem
                     as="p"
                     translateZ="60"
