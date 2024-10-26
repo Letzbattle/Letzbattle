@@ -240,7 +240,7 @@ const AddEventForm = () => {
               >
                 <option value="">Please select one…</option>
                 <option value="SCRIMS">Scrims </option>
-                <option value="TOURNAMENT">Tournament</option>
+                <option value="EVENT">Tournament</option>
               </select>
             </LabelInputContainer>
           </div>
