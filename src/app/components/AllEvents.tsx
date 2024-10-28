@@ -5,6 +5,9 @@ import { CardBody, CardContainer, CardItem } from "../../components/ui/3d-card";
 import Link from "next/link";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import Modal from "./Modal";
+import { button } from "framer-motion/m";
+import ShinyButton from "@/components/magicui/shiny-button";
 
 interface Event {
   id: string;
@@ -24,6 +27,9 @@ interface Event {
 
 export function AllEvents() {
   const [loading, setLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [rulesAccepted, setRulesAccepted] = useState<boolean>(false);
+  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
   const [allEvents, setAllEvents] = useState([]);
   const [activeTab, setActiveTab] = useState<string>("EVENT");
   const { data: user } = useSession();
@@ -51,6 +57,11 @@ export function AllEvents() {
   const filteredEvents = allEvents.filter(
     (event: any) => event.eventType.toLowerCase() === activeTab.toLowerCase()
   );
+
+  const handleRegisterClick = (eventId: string) => {
+    setSelectedEventId(eventId);
+    setIsOpen(true);
+  };
 
   return (
     <div className="flex flex-col items-center justify-center w-full px-2">
@@ -84,6 +95,48 @@ export function AllEvents() {
       </div>
 
       {/* Events */}
+      
+      <Modal isOpen={isOpen} onClose={() => { setIsOpen(false); setRulesAccepted(false); }} title="Rules">
+        <div>
+          <h4 className="text-lg font-semibold mb-2">Platform Rules</h4>
+          <ul className="list-disc list-inside space-y-1">
+            <li>You must be 13 years or older to participate.</li>
+            <li>We reserve the right to disqualify any user if suspicious activity is detected.</li>
+            <li>All participants must record their screens during gameplay.</li>
+            <li>Hackers will be disqualified and permanently banned from the platform.</li>
+          </ul>
+          {/* Accept Checkbox */}
+          <div className="mt-4">
+            <label className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                checked={rulesAccepted}
+                onChange={(e) => setRulesAccepted(e.target.checked)}
+                className="form-checkbox h-5 w-5 text-emerald-600"
+              />
+              <span className="text-sm">I accept the rules and guidelines</span>
+            </label>
+          </div>
+          {/* Redirect Button */}
+          <div className="mt-6">
+            <button
+              disabled={!rulesAccepted}
+              onClick={() => {
+                if (selectedEventId) {
+                  window.location.href = `/register/${selectedEventId}`;
+                }
+              }}
+              className={`w-full px-4 py-2 rounded-lg ${
+                rulesAccepted
+                  ? "bg-emerald-600 text-white hover:bg-emerald-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              Proceed to Event
+            </button>
+          </div>
+        </div>
+      </Modal>
 
       <div className="flex flex-wrap justify-evenly w-full">
         {/* Skeleton Loading Effect */}
@@ -224,8 +277,9 @@ export function AllEvents() {
                   <div className="flex justify-between items-center mt-10">
                     <CardItem
                       translateZ={20}
-                      as={Link}
-                      href={user ? `/register/${event.id}` : "/login"}
+                      as={button}
+                      // href={user ? `/register/${event.id}` : "/login"}
+                      onClick={() => handleRegisterClick(event.id)}
                       className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
                     >
                       Register now →
