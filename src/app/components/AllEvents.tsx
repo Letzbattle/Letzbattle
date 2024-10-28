@@ -275,6 +275,14 @@ export function AllEvents() {
                   </CardItem>
 
                   <div className="flex justify-between items-center mt-10">
+                 
+                    <CardItem
+                      translateZ={20}
+                      as="button"
+                      className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+                    >
+                      Slots Left: {event.seatsLeft}
+                    </CardItem>
                     <CardItem
                       translateZ={20}
                       as={button}
@@ -283,13 +291,6 @@ export function AllEvents() {
                       className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
                     >
                       Register now →
-                    </CardItem>
-                    <CardItem
-                      translateZ={20}
-                      as="button"
-                      className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
-                    >
-                      Slots Left: {event.seatsLeft}
                     </CardItem>
                   </div>
                 </CardBody>
