@@ -99,7 +99,7 @@ export function AllEvents() {
       <Modal isOpen={isOpen} onClose={() => { setIsOpen(false); setRulesAccepted(false); }} title="Rules">
         <div>
           <h4 className="text-lg font-semibold mb-2">Platform Rules</h4>
-          <ul className="list-disc list-inside space-y-1">
+          <ul className="list-disc list-inside space-y-1 text-black">
             <li>You must be 13 years or older to participate.</li>
             <li>We reserve the right to disqualify any user if suspicious activity is detected.</li>
             <li>All participants must record their screens during gameplay.</li>
