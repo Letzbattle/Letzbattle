@@ -291,9 +291,10 @@ export function AllEvents() {
                       as={button}
                       // href={user ? `/register/${event.id}` : "/login"}
                       onClick={() => handleRegisterClick(event.id)}
-                      className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
+                      className={`${event.seatsLeft>0 ?`px-4 py-2 rounded-xl text-xs font-normal dark:text-white`:`px-4 py-2 rounded-xl text-xs font-normaltext-gray-200 disabled  cursor-not-allowed`} `}
+                      disabled={event.seatsLeft <= 0}  
                     >
-                      Register now →
+                      {event.seatsLeft>0?"Register now →":"Seats Full"}
                     </CardItem>
                   </div>
                 </CardBody>
