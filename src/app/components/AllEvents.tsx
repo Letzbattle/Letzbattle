@@ -21,6 +21,7 @@ interface Event {
   expired: boolean;
   image: string;
   eventType: string;
+  reviewed: boolean;
   Participant: [];
   // Add other properties if available
 }
@@ -41,14 +42,13 @@ export function AllEvents() {
         const res = await axios.get(
           "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events"
         );
-        setAllEvents(res.data.events);
-        setLoading(false);
-        console.log(res.data.events);
-        // console.log(allEvents);
-        // setAllEvents(res.data.events);
+        setAllEvents(res.data.events.filter((event: Event) => event.reviewed));
+
+        // console.log(res.data.events.filter((event: Event) => event.reviewed));
       } catch (err) {
-        console.error(err);
-        setLoading(false); // Stop loader even if there’s an error
+        console.error("Error fetching events:", err);
+      } finally {
+        setLoading(false);
       }
     };
     getAllEvents();
