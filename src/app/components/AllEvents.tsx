@@ -7,7 +7,7 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import Modal from "./Modal";
 import { button } from "framer-motion/m";
-import ShinyButton from "@/components/magicui/shiny-button";
+import { useRouter } from "next/navigation";
 
 interface Event {
   id: string;
@@ -33,6 +33,7 @@ export function AllEvents() {
   const [allEvents, setAllEvents] = useState([]);
   const [activeTab, setActiveTab] = useState<string>("EVENT");
   const { data: user } = useSession();
+  const router=useRouter()
   useEffect(() => {
     const getAllEvents = async () => {
       setLoading(true);
@@ -122,8 +123,10 @@ export function AllEvents() {
             <button
               disabled={!rulesAccepted}
               onClick={() => {
-                if (selectedEventId) {
-                  window.location.href = `/register/${selectedEventId}`;
+                if (selectedEventId && user?.idToken) {
+                  router.push(`/register/${selectedEventId}`);
+                }else{
+                 router.push(`/login`);
                 }
               }}
               className={`w-full px-4 py-2 rounded-lg ${
