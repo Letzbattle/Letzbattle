@@ -134,25 +134,33 @@ router.push('/success')
       setError(validation.error.errors[0]?.message);
       return;
     }
+    if(event.entryFees>0){
+      try {
+        // Submit participant details to the backend
+  
+        // After successfully registering, create an order on the backend
+        const paymentResponse = await axios.post("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/order", {
+          amount: event.entryFees, // Example amount for the event, in INR
+          currency: "INR",
+        });
+  
+        const { orderId, amount } = paymentResponse?.data;
+       const res= await handlePayment(orderId, amount);
+       setLoader(false);
+       console.log({res})
+  
+  
+      } catch (err) {
+        setError("Error during registration or payment. Please try again.");
+      }
+    }else{
+      await post(`/api/events/${params.params.id}/participants`, formState);
+      setSuccess("Registration successful!");
 
-    try {
-      // Submit participant details to the backend
-
-      // After successfully registering, create an order on the backend
-      const paymentResponse = await axios.post("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/order", {
-        amount: event.entryFees, // Example amount for the event, in INR
-        currency: "INR",
-      });
-
-      const { orderId, amount } = paymentResponse?.data;
-     const res= await handlePayment(orderId, amount);
-     setLoader(false);
-     console.log({res})
-
-
-    } catch (err) {
-      setError("Error during registration or payment. Please try again.");
+      router.push('/success')
     }
+
+  
   };
 
   // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
