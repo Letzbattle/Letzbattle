@@ -164,7 +164,7 @@ const Sidebar = () => {
       {/* Hamburger Button */}
       <button
         onClick={toggleSidebar}
-        className="fixed top-4 left-2 z-50 p-2 bg-black text-white rounded-md"
+        className="md:hidden fixed top-4 left-2 z-50 p-2 bg-black text-white rounded-md md:h-screen"
       >
         {isOpen ? <FiX size={24} /> : <FiMenu size={24} />} {/* Show close (X) icon when open */}
       </button>
@@ -173,7 +173,7 @@ const Sidebar = () => {
       <div
         className={`fixed top-0 left-0 w-64 h-screen p-4 bg-black text-white z-40 transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"} 
-          absolute`} // `absolute` ensures it doesn't take space
+          absolute md:translate-x-0` } // `absolute` ensures it doesn't take space
       >
         <h1 className="text-lg font-bold mb-6 mt-10">Admin Dashboard</h1>
         <ul>
