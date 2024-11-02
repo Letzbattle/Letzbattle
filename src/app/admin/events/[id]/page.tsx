@@ -15,7 +15,9 @@ function EventDetails(params: any) {
   const session = useSession();
   const [participants, setParticipants] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [eventDetails,setEventDetails]=useState<any>()
   const [filteredParticipants, setFilteredParticipants] = useState([]);
+  
   const [isModalOpen,setModalOpen]=useState(false);
   const [loading, setLoading] = useState(false); 
   const [emailState,setEmailState]=useState({
@@ -24,12 +26,19 @@ function EventDetails(params: any) {
   })
   const getParticipants = async () => {
     const res = await get(`/api/events/${params.params.id}/participants`);
-    console.log(res?.data);
     setParticipants(res?.data?.participants);
     setFilteredParticipants(res?.data?.participants);
   };
+  const getEventDetails=async()=>{
+    const res= await axios.get(`https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`)
+    console.log(res?.data);
+    setEventDetails(res?.data)
+
+
+  }
   useEffect(() => {
     getParticipants();
+    getEventDetails();
   }, [session]);
   const sendEmail = async () => {
     setLoading(true); // Start loading
@@ -80,12 +89,12 @@ function EventDetails(params: any) {
       <div className="relative z-10">
         <h2 className="text-3xl text-center mt-24 font-bold text-white dark:text-white mb-6">
           Event Participants
-          <button
+          {new Date(eventDetails?.event?.date).setHours(0, 0, 0, 0)>=(new Date()).setHours(0, 0, 0, 0) && participants?.length>0 && <button
             className=" rounded-full border border-neutral-200 px-4 py-2 text-sm md:text-base font-medium text-white dark:border-white/[0.2] dark:text-white mx-4 "
             onClick={() => {setModalOpen(true)}}
           >
             Send Email
-          </button>
+          </button>}
         </h2>
         <Modal isOpen={isModalOpen} onClose={()=>setModalOpen(false)}>
         {loading ? ( 

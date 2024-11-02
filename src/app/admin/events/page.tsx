@@ -88,8 +88,9 @@ function AdminEvents() {
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
                     Entry Fees:{" "}
-                    <span className="font-medium">${event.entryFees}</span>
+                    <span className="font-medium">Rs.{event.entryFees}</span>
                   </p>
+                  
                 </div>
 
                 <div className="p-4 bg-gray-100 dark:bg-gray-700 flex justify-end">
