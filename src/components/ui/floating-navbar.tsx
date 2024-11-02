@@ -1,129 +1,178 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 import { cn } from "@/utils/cn";
 import Link from "next/link";
 import { auth } from "../../../auth";
-import { signOut,getSession } from "next-auth/react";
+import { signOut, getSession } from "next-auth/react";
 
 export const FloatingNav = ({
-    navItems,
-    className,
+  navItems,
+  className,
 }: {
-    navItems: {
-        name: string;
-        link: string;
-        icon?: JSX.Element;
-    }[];
-    className?: string;
+  navItems: {
+    name: string;
+    link: string;
+    icon?: JSX.Element;
+  }[];
+  className?: string;
 }) => {
-    const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  const [isProfileOpen, setProfileOpen] = useState(false);
+  const [user, setUserInfo] = useState<any>(null);
 
-    // Fetch session data when the component mounts
-    useEffect(() => {
-        const fetchSession = async () => {
-            const session = await getSession();
-            setSession(session);
-        };
+  // Fetch session data when the component mounts
+  useEffect(() => {
+    const fetchSession = async () => {
+      const session = await getSession();
+      setSession(session);
+      setUserInfo(session?.user);
+    };
 
-        fetchSession();
-    }, []);
+    fetchSession();
+  }, []);
 
-    const { scrollYProgress, scrollY } = useScroll();
+  const toggleProfileMenu = () => setProfileOpen(!isProfileOpen);
 
+  return (
+    // <AnimatePresence mode="wait">
+    //     <motion.div>
+    //         {navItems.map((navItem: any, idx: number) => (
+    //             <Link
+    //                 key={`link=${idx}`}
+    //                 href={navItem.link}
+    //                 className={cn(
+    //                     "relative flex items-center space-x-1 text-neutral-600 hover:text-neutral-500 dark:text-neutral-50 dark:hover:text-neutral-300"
+    //                 )}
+    //             >
+    //                 <span className="block sm:hidden">{navItem.icon} </span>
+    //                 <span className="hidden text-sm sm:block">{navItem.name} </span>
+    //             </Link>
+    //         ))}
+    //           {session ? (
+    //            <Link
+    //            href="/profile"
+    //            className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
+    //        >
+    //            <span>Profile</span>
+    //            <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+    //        </Link>
+    //         ) : (
+    //             null
+    //         )}
+    //         {session ? (
+    //             <button
+    //                 onClick={()=>{signOut()}}
+    //                 className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
+    //             >
+    //                 <span>Logout</span>
+    //                 <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+    //             </button>
+    //         ) : (
+    //             <>
+    //                 <Link
+    //                     href="/login"
+    //                     className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
+    //                 >
+    //                     <span>Login</span>
+    //                     <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+    //                 </Link>
+    //             </>
+    //         )}
+    //     </motion.div>
+    // </AnimatePresence>
+    <nav className="bg-black shadow-md relative z-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        <Link href="/" passHref>
+          <img
+            src="/logo1.png"
+            alt="NexGen Battles"
+            width={150}
+            height={50}
+            className="cursor-pointer"
+          />
+        </Link>
+        <div className="hidden sm:flex space-x-8">
+          {navItems.map((item: any, idx: number) => (
+            <Link key={item.name} href={item.link} passHref>
+              <span className="flex items-center space-x-2 text-gray-300 hover:text-white">
+                {item.icon}
+                <span>{item.name}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
 
-    const [visible, setVisible] = useState(true);
-
-    useMotionValueEvent(scrollYProgress, "change", current => {
-        // Check if current is not undefined and is a number
-        if (scrollY.get()! === 0) {
-            setVisible(true);
-            return;
-        }
-        if (typeof current === "number") {
-            let direction = current! - scrollYProgress.getPrevious()!;
-
-            if (scrollYProgress.get() < 0.05) {
-                setVisible(false);
-            } else {
-                if (direction < 0) {
-                    setVisible(true);
-                } else {
-                    setVisible(false);
-                }
-            }
-        }
-    });
-
-    return (
-        <AnimatePresence mode="wait">
-            <motion.div
-                initial={{
-                    opacity: 1,
-                    y: -100,
-                }}
-                animate={{
-                    y: visible ? 0 : -100,
-                    opacity: visible ? 1 : 0,
-                }}
-                transition={{
-                    duration: 0.2,
-                }}
-                className={cn(
-                    "fixed inset-x-0 top-10 z-50 mx-auto flex max-w-fit items-center justify-center space-x-4 rounded-full border border-transparent bg-white py-2 pl-8 pr-2 shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)] dark:border-white/[0.2] dark:bg-black",
-                    className
-                )}
+        {session ? (
+          // <button
+          //     onClick={()=>{signOut()}}
+          //     className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-white dark:border-white/[0.2] dark:text-white"
+          // >
+          //     <span>Logout</span>
+          //     <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+          // </button>
+          <div className="relative ml-6">
+            <button
+              onClick={toggleProfileMenu}
+              className="relative rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-white"
             >
-                {navItems.map((navItem: any, idx: number) => (
-                    <Link
-                        key={`link=${idx}`}
-                        href={navItem.link}
-                        className={cn(
-                            "relative flex items-center space-x-1 text-neutral-600 hover:text-neutral-500 dark:text-neutral-50 dark:hover:text-neutral-300"
-                        )}
-                    >
-                        <span className="block sm:hidden">{navItem.icon}</span>
-                        <span className="hidden text-sm sm:block">{navItem.name}</span>
-                    </Link>
-                ))}
-                  {session ? (
-                   <Link
-                   href="/profile"
-                   className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
-               >
-                   <span>Profile</span>
-                   <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-               </Link>
-                ) : (
-                    null
-                )} 
-                {session ? (
-                    <button
-                        onClick={()=>{signOut()}}
-                        className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
-                    >
-                        <span>Logout</span>
-                        <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                    </button>
-                ) : (
-                    <>
-                        <Link
-                            href="/login"
-                            className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
-                        >
-                            <span>Login</span>
-                            <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                        </Link>
-                        {/* <Link
-                            href="/register"
-                            className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-black dark:border-white/[0.2] dark:text-white"
-                        >
-                            <span>Signup</span>
-                            <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
-                        </Link> */}
-                    </>
-                )} 
-            </motion.div>
-        </AnimatePresence>
-    );
+              <img
+                src={user?.image || "/default-profile.png"}
+                alt="User profile"
+                width={40}
+                height={40}
+                className="rounded-full"
+              />
+            </button>
+            {isProfileOpen && (
+              <div
+                className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 transition ease-out duration-100 transform opacity-100 scale-100 ${
+                  isProfileOpen
+                    ? "ease-out duration-100"
+                    : "ease-in duration-75 opacity-0 scale-95"
+                }`}
+                onMouseLeave={() => setProfileOpen(false)}
+              >
+                <Link href="/profile">
+                  <span className="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                    Your Profile
+                  </span>
+                </Link>
+                <Link href="/settings">
+                  <span className="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                    Settings
+                  </span>
+                </Link>
+                <Link
+                  onClick={() => {
+                    signOut();
+                  }}
+                  href={""}
+                >
+                  <span className="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                    Logout
+                  </span>
+                </Link>
+              </div>
+            )}
+          </div>
+        ) : (
+          <>
+            <Link
+              href="/login"
+              className="relative rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-white dark:border-white/[0.2] dark:text-white"
+            >
+              <span>Login</span>
+              <span className="absolute inset-x-0 -bottom-px mx-auto h-px w-1/2 bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+            </Link>
+          </>
+        )}
+      </div>
+    </nav>
+  );
 };
