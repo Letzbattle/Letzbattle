@@ -56,8 +56,9 @@ export function AllEvents() {
 
   const checkIfAlreadyRegistered = useCallback(
     (event: any) => {
-  
-      return event.Participant.some((participant: any) => participant.userId === user?.user.id);
+      return event.Participant.some(
+        (participant: any) => participant.userId === user?.user.id
+      );
     },
     [user, allEvents]
   );
@@ -304,32 +305,38 @@ export function AllEvents() {
                       as="button"
                       className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
                     >
-                      Slots Left: {event.seatsLeft}
+                      Slots Left: {event.seatsLeft-event.Participant.length}
                     </CardItem>
                     <CardItem
-  translateZ={20}
-  as="button"
-  onClick={() => handleRegisterClick(event.id)}
-  className={`px-4 py-2 rounded-xl text-xs font-normal ${
-    checkIfAlreadyRegistered(event)
-      ? 'text-gray-400 cursor-not-allowed'
-      : event.seatsLeft > 0
-      ? 'dark:text-white'
-      : 'text-gray-200 cursor-not-allowed'
-  }`}
-  disabled={checkIfAlreadyRegistered(event) || event.seatsLeft <= 0}
->
-  {checkIfAlreadyRegistered(event) ? (
-    <p
-    >
-      Already Registered
-    </p>
-  ) : event.seatsLeft > 0 ? (
-    "Register now →"
-  ) : (
-    "Seats Full"
-  )}
-</CardItem>
+                      translateZ={20}
+                      as="button"
+                      className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
+                    >
+                      TotalTeam: {event.Participant.length}
+                    </CardItem>
+                    <CardItem
+                      translateZ={20}
+                      as="button"
+                      onClick={() => handleRegisterClick(event.id)}
+                      className={`px-4 py-2 rounded-xl text-xs font-normal ${
+                        checkIfAlreadyRegistered(event)
+                          ? "text-gray-400 cursor-not-allowed"
+                          : event.seatsLeft > 0
+                          ? "dark:text-white"
+                          : "text-gray-200 cursor-not-allowed"
+                      }`}
+                      disabled={
+                        checkIfAlreadyRegistered(event) || event.seatsLeft <= 0
+                      }
+                    >
+                      {checkIfAlreadyRegistered(event) ? (
+                        <p>Already Registered</p>
+                      ) : event.seatsLeft > 0 ? (
+                        "Register now →"
+                      ) : (
+                        "Seats Full"
+                      )}
+                    </CardItem>
                   </div>
                 </CardBody>
               </CardContainer>
