@@ -14,22 +14,23 @@ import { param } from "framer-motion/m";
 import axios from "axios";
 import Razorpay from "razorpay";
 
-
 const RegisterEvent = (params: any) => {
-
   // Define Zod schema for validation
   const onboardFormSchema = z.object({
     captainName: z.string().min(2, { message: "Captain name is required" }),
     teamName: z.string().min(2, { message: "Team name is required" }),
-    player1Name: z.string().min(2,{ message: "Player one name is required" }),
-    player2Name: z.string().min(2,{ message: "Player one name is required" }),
-    player3Name: z.string().min(2,{ message: "Player one name is required" }),
-    player4Name: z.string().min(2,{ message: "Player one name is required" }),
+    player1Name: z.string().min(2, { message: "Player one name is required" }),
+    player2Name: z.string().min(2, { message: "Player one name is required" }),
+    player3Name: z.string().min(2, { message: "Player one name is required" }),
+    player4Name: z.string().min(2, { message: "Player one name is required" }),
     player5Name: z.string().optional(), // Optional fields
     phoneNumber: z
       .string()
       .regex(/^\d{10}$/, { message: "Phone number must be 10 digits" }),
-    email: z.string().min(1, { message: "Email is required." }).email('Email is invalid.'), 
+    email: z
+      .string()
+      .min(1, { message: "Email is required." })
+      .email("Email is invalid."),
   });
 
   const [formState, setFormState] = useState({
@@ -45,9 +46,8 @@ const RegisterEvent = (params: any) => {
   });
 
   const [event, setEvent] = useState({
-    name:"",
-    entryFees:0.
-
+    name: "",
+    entryFees: 0,
   });
 
   const [success, setSuccess] = useState("");
@@ -59,21 +59,20 @@ const RegisterEvent = (params: any) => {
 
   const { data: session, update } = useSession();
 
-  useEffect(()=>{
-    const getEventDetails= async () =>{
-      try{
-        const res=await axios.get(`https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`);
+  useEffect(() => {
+    const getEventDetails = async () => {
+      try {
+        const res = await axios.get(
+          `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`
+        );
         console.log(res);
         setEvent(res.data.event);
-
-      }
-      catch (err) {
+      } catch (err) {
         console.error(err);
       }
-      
-    }
+    };
     getEventDetails();
-  },[params.params.id])
+  }, [params.params.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -99,11 +98,23 @@ const RegisterEvent = (params: any) => {
         };
         // Verify payment by sending the response data to your backend
         try {
-          await axios.post("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/verify", paymentData);
+          await axios.post(
+            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/verify",
+            paymentData
+          );
           await post(`/api/events/${params.params.id}/participants`, formState);
 
           setSuccess("Payment successful and verified!");
-router.push('/success')
+
+          router.push("/success");
+          await axios.post(
+            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
+            {
+              to: session?.user.email,
+              subject: `Successfully registered ${event.name}`,
+              text: `Congratulations, You are successfully registered for the ${event.name} `,
+            }
+          );
           // Proceed with further actions, like updating user data or redirecting
         } catch (error) {
           setError("Payment verification failed");
@@ -134,33 +145,40 @@ router.push('/success')
       setError(validation.error.errors[0]?.message);
       return;
     }
-    if(event.entryFees>0){
+    if (event.entryFees > 0) {
       try {
         // Submit participant details to the backend
-  
+
         // After successfully registering, create an order on the backend
-        const paymentResponse = await axios.post("https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/order", {
-          amount: event.entryFees, // Example amount for the event, in INR
-          currency: "INR",
-        });
-  
+        const paymentResponse = await axios.post(
+          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/order",
+          {
+            amount: event.entryFees, // Example amount for the event, in INR
+            currency: "INR",
+          }
+        );
+
         const { orderId, amount } = paymentResponse?.data;
-       const res= await handlePayment(orderId, amount);
-       setLoader(false);
-       console.log({res})
-  
-  
+        const res = await handlePayment(orderId, amount);
+        setLoader(false);
+        console.log({ res });
       } catch (err) {
         setError("Error during registration or payment. Please try again.");
       }
-    }else{
+    } else {
       await post(`/api/events/${params.params.id}/participants`, formState);
       setSuccess("Registration successful!");
 
-      router.push('/success')
+      router.push("/success");
+      await axios.post(
+        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
+        {
+          to: session?.user.email,
+          subject: `Successfully registered ${event.name}`,
+          text: `Congratulations, You are successfully registered for the ${event.name} `,
+        }
+      );
     }
-
-  
   };
 
   // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

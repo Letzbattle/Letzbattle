@@ -100,7 +100,7 @@ export function AllEvents() {
               : "bg-gray-300 text-gray-700 hover:bg-gray-400"
           }`}
         >
-          Practice
+          Scrims
         </button>
       </div>
 
