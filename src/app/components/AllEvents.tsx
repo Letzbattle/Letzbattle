@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CardBody, CardContainer, CardItem } from "../../components/ui/3d-card";
 import Link from "next/link";
 import axios from "axios";
@@ -34,7 +34,7 @@ export function AllEvents() {
   const [allEvents, setAllEvents] = useState([]);
   const [activeTab, setActiveTab] = useState<string>("EVENT");
   const { data: user } = useSession();
-  const router=useRouter()
+  const router = useRouter();
   useEffect(() => {
     const getAllEvents = async () => {
       setLoading(true);
@@ -53,6 +53,14 @@ export function AllEvents() {
     };
     getAllEvents();
   }, []);
+
+  const checkIfAlreadyRegistered = useCallback(
+    (event: any) => {
+  
+      return event.Participant.some((participant: any) => participant.userId === user?.user.id);
+    },
+    [user, allEvents]
+  );
 
   // Filter events based on active tab (eventType)
   const filteredEvents = allEvents.filter(
@@ -96,15 +104,28 @@ export function AllEvents() {
       </div>
 
       {/* Events */}
-      
-      <Modal isOpen={isOpen} onClose={() => { setIsOpen(false); setRulesAccepted(false); }} title="Rules">
+
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+          setRulesAccepted(false);
+        }}
+        title="Rules"
+      >
         <div>
           <h4 className="text-lg font-semibold mb-2">Platform Rules</h4>
           <ul className="list-disc list-inside space-y-1 text-black">
             <li>You must be 13 years or older to participate.</li>
-            <li>We reserve the right to disqualify any user if suspicious activity is detected.</li>
+            <li>
+              We reserve the right to disqualify any user if suspicious activity
+              is detected.
+            </li>
             <li>All participants must record their screens during gameplay.</li>
-            <li>Hackers will be disqualified and permanently banned from the platform.</li>
+            <li>
+              Hackers will be disqualified and permanently banned from the
+              platform.
+            </li>
           </ul>
           {/* Accept Checkbox */}
           <div className="mt-4">
@@ -125,8 +146,8 @@ export function AllEvents() {
               onClick={() => {
                 if (selectedEventId && user?.idToken) {
                   router.push(`/register/${selectedEventId}`);
-                }else{
-                 router.push(`/login`);
+                } else {
+                  router.push(`/login`);
                 }
               }}
               className={`w-full px-4 py-2 rounded-lg ${
@@ -278,7 +299,6 @@ export function AllEvents() {
                   </CardItem>
 
                   <div className="flex justify-between items-center mt-10">
-                 
                     <CardItem
                       translateZ={20}
                       as="button"
@@ -287,15 +307,29 @@ export function AllEvents() {
                       Slots Left: {event.seatsLeft}
                     </CardItem>
                     <CardItem
-                      translateZ={20}
-                      as={button}
-                      // href={user ? `/register/${event.id}` : "/login"}
-                      onClick={() => handleRegisterClick(event.id)}
-                      className={`${event.seatsLeft>0 ?`px-4 py-2 rounded-xl text-xs font-normal dark:text-white`:`px-4 py-2 rounded-xl text-xs font-normaltext-gray-200 disabled  cursor-not-allowed`} `}
-                      disabled={event.seatsLeft <= 0}  
-                    >
-                      {event.seatsLeft>0?"Register now →":"Seats Full"}
-                    </CardItem>
+  translateZ={20}
+  as="button"
+  onClick={() => handleRegisterClick(event.id)}
+  className={`px-4 py-2 rounded-xl text-xs font-normal ${
+    checkIfAlreadyRegistered(event)
+      ? 'text-gray-400 cursor-not-allowed'
+      : event.seatsLeft > 0
+      ? 'dark:text-white'
+      : 'text-gray-200 cursor-not-allowed'
+  }`}
+  disabled={checkIfAlreadyRegistered(event) || event.seatsLeft <= 0}
+>
+  {checkIfAlreadyRegistered(event) ? (
+    <p
+    >
+      Already Registered
+    </p>
+  ) : event.seatsLeft > 0 ? (
+    "Register now →"
+  ) : (
+    "Seats Full"
+  )}
+</CardItem>
                   </div>
                 </CardBody>
               </CardContainer>
