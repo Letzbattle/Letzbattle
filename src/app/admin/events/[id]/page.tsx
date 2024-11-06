@@ -9,11 +9,13 @@ import { Label } from "@radix-ui/react-label";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import BottomGradient from "@/components/ui/BottomGradient";
+import { toast } from "react-toastify";
+
 
 function EventDetails(params: any) {
   const { get } = useApi();
   const session = useSession();
-  const [participants, setParticipants] = useState([]);
+  const [participants, setParticipants] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [eventDetails,setEventDetails]=useState<any>()
   const [filteredParticipants, setFilteredParticipants] = useState([]);
@@ -40,32 +42,68 @@ function EventDetails(params: any) {
     getParticipants();
     getEventDetails();
   }, [session]);
+  // const sendEmail = async () => {
+  //   setLoading(true); // Start loading
+  //   try {
+  //     await Promise.all(
+  //       participants.map(async (participant: { email: string }) => {
+  //         const res = await axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
+  //           to: participant.email,
+  //           subject: emailState.subject,
+  //           text: emailState.value
+  //         });
+  //       })
+  //     );
+  //     alert("Emails sent successfully!");
+  //   } catch (error) {
+  //     console.error("Error sending emails", error);
+  //     alert("Failed to send emails.");
+  //   } finally {
+  //     setLoading(false); 
+  //     setModalOpen(false);
+  //     setEmailState({
+  //       subject:'',
+  //       value:''
+  //     })
+  //   }
+  // };
+
   const sendEmail = async () => {
-    setLoading(true); // Start loading
+    setLoading(true); 
     try {
-      await Promise.all(
+      const results = await Promise.allSettled(
         participants.map(async (participant: { email: string }) => {
-          const res = await axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
+          return axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
             to: participant.email,
             subject: emailState.subject,
             text: emailState.value
           });
         })
       );
-      alert("Emails sent successfully!");
+  
+      // Check for any rejected promises
+      const failedEmails = results
+        .filter(result => result.status === 'rejected')
+        .map((result, index) => participants[index]?.email); // Get the failed emails
+  
+      if (failedEmails.length > 0) {
+        console.warn("Failed to send emails to the following addresses:", failedEmails);
+        toast.error("Some emails failed to send. Check the console for details.");
+      } else {
+        toast.success("Emails sent successfully!");
+      }
     } catch (error) {
       console.error("Error sending emails", error);
-      alert("Failed to send emails.");
     } finally {
       setLoading(false); 
       setModalOpen(false);
       setEmailState({
-        subject:'',
-        value:''
-      })
+        subject: '',
+        value: ''
+      });
     }
   };
-
+  
   useEffect(() => {
     const filtered = participants?.filter(
       (participant: any) =>
