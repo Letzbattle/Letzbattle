@@ -149,9 +149,10 @@ const AddEventForm = () => {
       if (response) {
         setLoader(false);
         setSuccess("Event created successfully!");
+        toast.success("Event is in the review we will contact you soon")
         setError("");
 
-        router.push("/");
+        router.push("/admin/inReviews");
       }
     } catch (validationError: any) {
       setSuccess(""); // Clear any previous success message

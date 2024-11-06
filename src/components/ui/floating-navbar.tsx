@@ -143,9 +143,9 @@ export const FloatingNav = ({
                     Your Profile
                   </span>
                 </Link>
-                <Link href="/settings">
+                <Link href="/admin/events">
                   <span className="block px-4 py-2 text-gray-700 hover:bg-gray-200">
-                    Settings
+                    Your Events
                   </span>
                 </Link>
                 <Link
