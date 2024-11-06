@@ -8,6 +8,8 @@ import { signOut } from "next-auth/react";
 import Script from "next/script";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -28,6 +30,7 @@ export default async function RootLayout({
         {/* <KeepAlive/> */}
       <NextAuthSessionProvider>
         <Header/>
+        <ToastContainer  style={{ zIndex: 9999 }} position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnHover draggable pauseOnFocusLoss  /> 
       {children}
       <Footer/>
       </NextAuthSessionProvider>
