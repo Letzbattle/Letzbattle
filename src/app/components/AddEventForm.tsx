@@ -10,6 +10,7 @@ import LabelInputContainer from "@/components/ui/LabelInputContainer";
 import BottomGradient from "@/components/ui/BottomGradient";
 import axios from "axios";
 import { cn } from "@/utils/cn";
+import { toast } from "react-toastify";
 
 const AddEventForm = () => {
   // Define Zod schema for validation
@@ -107,6 +108,7 @@ const AddEventForm = () => {
 
     if (!imageUrl) {
       setError("Image upload failed");
+      toast.error("Image upload failed, Please try again.");
       setLoader(false);
       return;
     }
@@ -157,8 +159,12 @@ const AddEventForm = () => {
       if (validationError instanceof z.ZodError) {
         // If it's a Zod error, extract the first error message and display it
         setError(validationError.errors[0].message);
+        validationError.errors.forEach((err) => {
+          toast.error(err.message); // Ensure each validation error is displayed
+        });
       } else {
         setError("Failed to create event");
+        toast.error("Failed to create event. Please try again.");
       }
       // setError(error?.response?.data?.message || "Failed to create event");
     }
