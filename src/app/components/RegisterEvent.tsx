@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { param } from "framer-motion/m";
 import axios from "axios";
 import Razorpay from "razorpay";
+import { toast } from "react-toastify";
 
 
 const RegisterEvent = (params: any) => {
@@ -132,6 +133,8 @@ router.push('/success')
 
     if (!validation.success) {
       setError(validation.error.errors[0]?.message);
+      toast.error(validation.error.errors[0]?.message);
+      setLoader(false)
       return;
     }
     if(event.entryFees>0){
@@ -152,6 +155,7 @@ router.push('/success')
   
       } catch (err) {
         setError("Error during registration or payment. Please try again.");
+        toast.error("Error during registration or payment. Please try again.");
       }
     }else{
       await post(`/api/events/${params.params.id}/participants`, formState);
