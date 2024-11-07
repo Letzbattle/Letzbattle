@@ -156,7 +156,10 @@ const Profile = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: any) => ({ ...prev, [name]: value }));
+    setFormData((prev: any) => ({
+    ...prev,
+    [name]: name === "age" ? Number(value) : value, // Convert age to a number
+  }));
   };
 
   const handleSave = async () => {
@@ -250,9 +253,9 @@ const Profile = () => {
                 className="w-full p-2 mb-3 border border-gray-300 rounded dark:bg-gray-800 dark:text-white"
               />
               <input
-                type="text"
+                type="number"
                 name="age"
-                value={formData.age || ""}
+                value={formData.age || 0}
                 onChange={handleChange}
                 placeholder="Age"
                 className="w-full p-2 mb-3 border border-gray-300 rounded dark:bg-gray-800 dark:text-white"
