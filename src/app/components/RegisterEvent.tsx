@@ -169,7 +169,7 @@ const RegisterEvent = (params: any) => {
         setError("Error during registration or payment. Please try again.");
         toast.error("Error during registration or payment. Please try again.");
       }
-    } else {
+    } else if(event.entryFees===0){
       await post(`/api/events/${params.params.id}/participants`, formState);
       setSuccess("Registration successful!");
 
