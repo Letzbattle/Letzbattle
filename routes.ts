@@ -38,6 +38,17 @@ export const config = {
 
 export const publicRoutes = [
     "/",  // Add more public routes as necessary
+    '/aboutUs',
+    '/blogs',
+    '/cancellation',
+    '/cancellation-&-fund',
+    '/claimPolicy',
+    '/contactUs',
+    '/cookiePolicy',
+    '/ourTeam',
+    '/privacyPolicy',
+    '/shipping',
+    '/termsOfUse'
 ];
 
 export const authRoutes = [
