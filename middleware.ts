@@ -1,6 +1,7 @@
-import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { DEFAULT_LOGIN_REDIRECT, publicRoutes } from './routes';
+import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { DEFAULT_LOGIN_REDIRECT, publicRoutes } from "./routes";
+import { signOut } from "next-auth/react";
 
 const secret = "supersecret";
 
@@ -8,6 +9,7 @@ export default async function middleware(req: any) {
   const { nextUrl } = req;
   const token = await getToken({ req, secret });
   console.log({ token });
+
   const isLoggedIn = !!token; // Check if user is logged in
   const isLoginPage = nextUrl.pathname === "/login";
   const isOnboardingPage = nextUrl.pathname === "/onboard";
@@ -15,6 +17,15 @@ export default async function middleware(req: any) {
   console.log("Middleware triggered");
 
   if (isLoggedIn) {
+    console.log(isLoggedIn,token,'avdc')
+    // Check if the token has expired
+    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+    if (token.exp && token.exp < currentTime) {
+      console.log("Token has expired, logging out user");
+      await signOut()
+      return NextResponse.redirect(new URL("/login", nextUrl));
+    }
+
     // If logged in and accessing the login page, redirect away
     if (isLoginPage) {
       return NextResponse.redirect(new URL("/", nextUrl));
