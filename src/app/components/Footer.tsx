@@ -81,15 +81,15 @@ const Footer: React.FC = () => {
         <div className="md:flex md:justify-between md:space-x-8 ">
           <div className="mb-6 md:mb-0 z-20">
             <a href="#" className="flex items-center">
-              <Image src={"/logo.jpeg"} alt="logo" width={80} height={80} />
-              <span className="self-center text-2xl font-bold text-white ml-3">
+              <img src={"/logo1.png"} alt="NexGen Battles" width={150} height={50} className=" ml-[-1rem] lg:ml-0" />
+              <span className="self-center text-2xl font-bold text-white ml-3 mt-2">
                 NexGen Battles
               </span>
             </a>
-            <p className="mt-4 text-gray-400">
+            <p className="mt-[-2rem] lg:ml-4 text-gray-400">
               Next-generation battles for modern athletes.
             </p>
-            <div className="flex mt-4 space-x-4">
+            <div className="flex mt-4 lg:ml-4 space-x-4">
               <a
                 href="https://www.facebook.com/"
                 className="text-gray-500 hover:text-cyan-500"
@@ -230,7 +230,7 @@ const Footer: React.FC = () => {
               </ul>
             </div>
 
-            <div className=" md:block mr-10">
+            {/* <div className=" md:block mr-10">
               <h2 className="text-lg font-semibold mb-4">
                 Subscribe to our newsletter
               </h2>
@@ -251,7 +251,7 @@ const Footer: React.FC = () => {
                   Subscribe
                 </button>
               </form>
-            </div>
+            </div> */}
           </div>
         </div>
 
