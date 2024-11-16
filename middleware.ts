@@ -17,6 +17,7 @@ export default async function middleware(req: any) {
   console.log("Middleware triggered");
 
   if (isLoggedIn) {
+    console.log(isLoggedIn,token,'avdc')
     // Check if the token has expired
     const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
     if (token.exp && token.exp < currentTime) {
