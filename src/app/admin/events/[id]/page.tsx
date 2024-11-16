@@ -10,34 +10,45 @@ import { Input } from "@/components/ui/input";
 import axios from "axios";
 import BottomGradient from "@/components/ui/BottomGradient";
 import { toast } from "react-toastify";
-
+import { set } from "zod";
 
 function EventDetails(params: any) {
   const { get } = useApi();
   const session = useSession();
   const [participants, setParticipants] = useState<any>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [eventDetails,setEventDetails]=useState<any>()
+  const [eventDetails, setEventDetails] = useState<any>();
   const [filteredParticipants, setFilteredParticipants] = useState([]);
-  
-  const [isModalOpen,setModalOpen]=useState(false);
-  const [loading, setLoading] = useState(false); 
-  const [emailState,setEmailState]=useState({
-    subject:'',
-    value:''
-  })
+  const [loader, setLoader] = useState(true);
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [emailState, setEmailState] = useState({
+    subject: "",
+    value: "",
+  });
   const getParticipants = async () => {
-    const res = await get(`/api/events/${params.params.id}/participants`);
-    setParticipants(res?.data?.participants);
-    setFilteredParticipants(res?.data?.participants);
+    // const res = await get(`/api/events/${params.params.id}/participants`);
+    // setParticipants(res?.data?.participants);
+    // setFilteredParticipants(res?.data?.participants);
+    // setLoader(false);
+    try {
+      const res = await get(`/api/events/${params.params.id}/participants`);
+      setParticipants(res?.data?.participants || []);
+      setFilteredParticipants(res?.data?.participants || []);
+    } catch (error) {
+      console.error("Failed to fetch participants:", error);
+    } finally {
+      setLoader(false); // Stop loader
+    }
   };
-  const getEventDetails=async()=>{
-    const res= await axios.get(`https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`)
+  const getEventDetails = async () => {
+    const res = await axios.get(
+      `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`
+    );
     console.log(res?.data);
-    setEventDetails(res?.data)
-
-
-  }
+    setEventDetails(res?.data);
+  };
   useEffect(() => {
     getParticipants();
     getEventDetails();
@@ -59,7 +70,7 @@ function EventDetails(params: any) {
   //     console.error("Error sending emails", error);
   //     alert("Failed to send emails.");
   //   } finally {
-  //     setLoading(false); 
+  //     setLoading(false);
   //     setModalOpen(false);
   //     setEmailState({
   //       subject:'',
@@ -69,41 +80,49 @@ function EventDetails(params: any) {
   // };
 
   const sendEmail = async () => {
-    setLoading(true); 
+    setLoading(true);
     try {
       const results = await Promise.allSettled(
         participants.map(async (participant: { email: string }) => {
-          return axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
-            to: participant.email,
-            subject: emailState.subject,
-            text: emailState.value
-          });
+          return axios.post(
+            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
+            {
+              to: participant.email,
+              subject: emailState.subject,
+              text: emailState.value,
+            }
+          );
         })
       );
-  
+
       // Check for any rejected promises
       const failedEmails = results
-        .filter(result => result.status === 'rejected')
+        .filter((result) => result.status === "rejected")
         .map((result, index) => participants[index]?.email); // Get the failed emails
-  
+
       if (failedEmails.length > 0) {
-        console.warn("Failed to send emails to the following addresses:", failedEmails);
-        toast.error("Some emails failed to send. Check the console for details.");
+        console.warn(
+          "Failed to send emails to the following addresses:",
+          failedEmails
+        );
+        toast.error(
+          "Some emails failed to send. Check the console for details."
+        );
       } else {
         toast.success("Emails sent successfully!");
       }
     } catch (error) {
       console.error("Error sending emails", error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
       setModalOpen(false);
       setEmailState({
-        subject: '',
-        value: ''
+        subject: "",
+        value: "",
       });
     }
   };
-  
+
   useEffect(() => {
     const filtered = participants?.filter(
       (participant: any) =>
@@ -127,15 +146,21 @@ function EventDetails(params: any) {
       <div className="relative z-10">
         <h2 className="text-3xl text-center mt-24 font-bold text-white dark:text-white mb-6">
           Event Participants
-          {new Date(eventDetails?.event?.date).setHours(0, 0, 0, 0)>=(new Date()).setHours(0, 0, 0, 0) && participants?.length>0 && <button
-            className=" rounded-full border border-neutral-200 px-4 py-2 text-sm md:text-base font-medium text-white dark:border-white/[0.2] dark:text-white mx-4 "
-            onClick={() => {setModalOpen(true)}}
-          >
-            Send Email
-          </button>}
+          {new Date(eventDetails?.event?.date).setHours(0, 0, 0, 0) >=
+            new Date().setHours(0, 0, 0, 0) &&
+            participants?.length > 0 && (
+              <button
+                className=" rounded-full border border-neutral-200 px-4 py-2 text-sm md:text-base font-medium text-white dark:border-white/[0.2] dark:text-white mx-4 "
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+              >
+                Send Email
+              </button>
+            )}
         </h2>
-        <Modal isOpen={isModalOpen} onClose={()=>setModalOpen(false)}>
-        {loading ? ( 
+        <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
+          {loading ? (
             <div className="flex items-center justify-center h-20">
               <p className="text-black">Sending emails, please wait...</p>
               <div className="spinner-border animate-spin inline-block w-6 h-6 border-4 rounded-full border-t-transparent border-black ml-2"></div>
@@ -175,7 +200,8 @@ function EventDetails(params: any) {
                 Send &rarr;
                 <BottomGradient />
               </button>
-            </>)}
+            </>
+          )}
         </Modal>
 
         {/* Total Teams */}
@@ -193,8 +219,16 @@ function EventDetails(params: any) {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-
-        {filteredParticipants?.length > 0 ? (
+        {loader ? (
+          <div className="space-y-4">
+          {[...Array(5)].map((_, index) => (
+            <div
+              key={index}
+              className="animate-pulse bg-gray-300 dark:bg-gray-700 h-10 w-full rounded-md"
+            ></div>
+          ))}
+        </div>
+        ) : filteredParticipants?.length > 0 ? (
           <div className="overflow-x-auto">
             {/* Table layout for larger screens */}
             <table className="hidden md:table min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
@@ -348,7 +382,7 @@ function EventDetails(params: any) {
           </div>
         ) : (
           <div className="flex justify-center items-center min-h-[200px]">
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
+            <p className="text-white dark:text-white text-lg">
               No participants found.
             </p>
           </div>
@@ -362,4 +396,3 @@ export default EventDetails;
 function post(arg0: string) {
   throw new Error("Function not implemented.");
 }
-
