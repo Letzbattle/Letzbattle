@@ -87,7 +87,7 @@ function EventDetails({ params }: any) {
 
     try {
       const res = await axios.post(
-        "http://localhost:3001/api/events/send-email-batch",
+        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email-batch",
         {
           emails: participants.map((participant) => participant.email),
           subject: emailState.subject,
