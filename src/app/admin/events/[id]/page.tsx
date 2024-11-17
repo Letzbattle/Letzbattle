@@ -23,7 +23,6 @@ function EventDetails({ params }: any) {
   const [isFailedModalOpen, setFailedModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailState, setEmailState] = useState({ subject: "", value: "" });
-
   const getParticipants = async () => {
     const res = await get(`/api/events/${params.id}/participants`);
     setParticipants(res?.data?.participants);
@@ -31,7 +30,9 @@ function EventDetails({ params }: any) {
   };
 
   const getEventDetails = async () => {
-    const res = await axios.get(`https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.id}`);
+    const res = await axios.get(
+      `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.id}`
+    );
     setEventDetails(res?.data);
   };
 
@@ -42,89 +43,102 @@ function EventDetails({ params }: any) {
     }
   }, [session]);
 
-  const MAX_RETRIES = 3;
-  const RETRY_DELAY = 1000;
-
-  const sendEmailWithRetry = async (email: string, subject: string, body: string, attempt: number = 0): Promise<boolean> => {
-    try {
-      const response = await axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
-        to: email,
-        subject: subject,
-        text: body,
-      });
-
-      if (response.status === 200) {
-        return true;
-      } else {
-        throw new Error(`Failed to send email to ${email}`);
-      }
-    } catch (error) {
-      if (attempt < MAX_RETRIES) {
-        const delay = RETRY_DELAY * Math.pow(2, attempt);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        return sendEmailWithRetry(email, subject, body, attempt + 1);
-      } else {
-        return false;
-      }
-    }
-  };
+  // const sendEmail = async () => {
+  //     setLoading(true); // Start loading
+  //     try {
+  //       await Promise.all(
+  //         participants.map(async (participant: { email: string }) => {
+  //           const res = await axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
+  //             to: participant.email,
+  //             subject: emailState.subject,
+  //             text: emailState.value
+  //           });
+  //         })
+  //       );
+  //       alert("Emails sent successfully!");
+  //     } catch (error) {
+  //       console.error("Error sending emails", error);
+  //       alert("Failed to send emails.");
+  //     } finally {
+  //       setLoading(false);
+  //       setModalOpen(false);
+  //       setEmailState({
+  //         subject:'',
+  //         value:''
+  //       })
+  //     }
+  //   };
 
   const sendEmail = async () => {
-    setLoading(true);
+    setLoading(true); // Start loading
+
     try {
-      const results = await Promise.allSettled(
-        participants.map(async (participant: { email: string }) => {
-          const success = await sendEmailWithRetry(participant.email, emailState.subject, emailState.value);
-          return success;
-        })
+      const res = await axios.post(
+        "http://localhost:3001/api/events/send-email-batch",
+        {
+          emails: participants.map((participant) => participant.email),
+          subject: emailState.subject,
+          text: emailState.value,
+        }
       );
-
-      const failedEmails = results
-        .filter(result => result.status === 'rejected' || result.value === false)
-        .map((result, index) => participants[index]?.email);
-
-      setFailedEmails(failedEmails);
-
-      if (failedEmails.length > 0) {
-        toast.error("Some emails failed to send. Check the console for details.");
-      } else {
-        toast.success("Emails sent successfully!");
+      if(res.data.failedEmails.length==0){
+        toast.success('All Emails are sent')
+      }else{
+        toast.error(`${res.data.failedEmails.length} emails are not sent`)
       }
+
+      setFailedEmails(res.data.failedEmails);
     } catch (error) {
-      console.error("Error sending emails", error);
+      toast.error("An unexpected error occurred while sending emails.");
     } finally {
       setLoading(false);
       setModalOpen(false);
       setFailedModalOpen(true);
-      setEmailState({ subject: '', value: '' });
+      setEmailState({ subject: "", value: "" });
     }
   };
 
   useEffect(() => {
-    const filtered = participants?.filter((participant: any) =>
-      participant.captainName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      participant.teamName.toLowerCase().includes(searchQuery.toLowerCase())
+    const filtered = participants?.filter(
+      (participant: any) =>
+        participant.captainName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) ||
+        participant.teamName.toLowerCase().includes(searchQuery.toLowerCase())
     );
     setFilteredParticipants(filtered);
   }, [searchQuery, participants]);
 
   return (
     <div className="p-4 min-h-screen bg-black dark:bg-gray-900">
-      <Particles className="fixed inset-0 h-full w-full" quantity={500} ease={100} color="#ffffff" refresh />
+      <Particles
+        className="fixed inset-0 h-full w-full"
+        quantity={500}
+        ease={100}
+        color="#ffffff"
+        refresh
+      />
       <div className="relative z-10">
         <h2 className="text-3xl text-center mt-24 font-bold text-white dark:text-white mb-6">
           Event Participants
-          {new Date(eventDetails?.event?.date).setHours(0, 0, 0, 0) >= new Date().setHours(0, 0, 0, 0) && participants?.length > 0 && (
-            <button
-              className="rounded-full border border-neutral-200 px-4 py-2 text-sm md:text-base font-medium text-white dark:border-white/[0.2] dark:text-white mx-4"
-              onClick={() => { setModalOpen(true); }}
-            >
-              Send Email
-            </button>
-          )}
+          {new Date(eventDetails?.event?.date).setHours(0, 0, 0, 0) >=
+            new Date().setHours(0, 0, 0, 0) &&
+            participants?.length > 0 && (
+              <button
+                className="rounded-full border border-neutral-200 px-4 py-2 text-sm md:text-base font-medium text-white dark:border-white/[0.2] dark:text-white mx-4"
+                onClick={() => {
+                  setModalOpen(true);
+                }}
+              >
+                Send Email
+              </button>
+            )}
         </h2>
 
-        <Modal isOpen={isFailedModalOpen} onClose={() => setFailedModalOpen(false)}>
+        <Modal
+          isOpen={isFailedModalOpen}
+          onClose={() => setFailedModalOpen(false)}
+        >
           {failedEmails.length > 0 && (
             <div className="mt-4 text-red-500">
               <h3 className="text-lg font-semibold">Failed to send to:</h3>
@@ -140,7 +154,10 @@ function EventDetails({ params }: any) {
         <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
           {loading ? (
             <div className="flex items-center justify-center h-20">
-              <p className="text-black">Sending emails, please wait... can take upto 3 mins</p>
+              <p className="text-black">
+                Sending emails, please wait... can take upto 3 mins
+              </p>
+             
               <div className="spinner-border animate-spin inline-block w-6 h-6 border-4 rounded-full border-t-transparent border-black ml-2"></div>
             </div>
           ) : (
@@ -153,7 +170,9 @@ function EventDetails({ params }: any) {
                   placeholder="Subject"
                   type="text"
                   value={emailState.subject}
-                  onChange={(e) => setEmailState({ ...emailState, subject: e.target.value })}
+                  onChange={(e) =>
+                    setEmailState({ ...emailState, subject: e.target.value })
+                  }
                 />
               </LabelInputContainer>
               <LabelInputContainer>
@@ -164,7 +183,9 @@ function EventDetails({ params }: any) {
                   placeholder="Message"
                   type="text"
                   value={emailState.value}
-                  onChange={(e) => setEmailState({ ...emailState, value: e.target.value })}
+                  onChange={(e) =>
+                    setEmailState({ ...emailState, value: e.target.value })
+                  }
                 />
               </LabelInputContainer>
               <button
@@ -200,17 +221,32 @@ function EventDetails({ params }: any) {
             <table className="hidden md:table min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-md">
               <thead>
                 <tr className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
-                  <th className="px-6 py-3 text-left font-semibold">Captain Name</th>
-                  <th className="px-6 py-3 text-left font-semibold">Team Name</th>
-                  <th className="px-6 py-3 text-left font-semibold">Player 1</th>
-                  <th className="px-6 py-3 text-left font-semibold">Player 2</th>
-                  <th className="px-6 py-3 text-left font-semibold">Player 3</th>
-                  <th className="px-6 py-3 text-left font-semibold">Player 4</th>
+                  <th className="px-6 py-3 text-left font-semibold">
+                    Captain Name
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold">
+                    Team Name
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold">
+                    Player 1
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold">
+                    Player 2
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold">
+                    Player 3
+                  </th>
+                  <th className="px-6 py-3 text-left font-semibold">
+                    Player 4
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {filteredParticipants.map((participant, index) => (
-                  <tr key={index} className="border-t border-gray-200 dark:border-gray-700">
+                  <tr
+                    key={index}
+                    className="border-t border-gray-200 dark:border-gray-700"
+                  >
                     <td className="px-6 py-4">{participant.captainName}</td>
                     <td className="px-6 py-4">{participant.teamName}</td>
                     <td className="px-6 py-4">{participant.player1Name}</td>
@@ -225,7 +261,6 @@ function EventDetails({ params }: any) {
         ) : (
           <p className="text-white">No participants found.</p>
         )}
-
       </div>
     </div>
   );
