@@ -56,72 +56,53 @@ function EventDetails({ params }: any) {
     }
   }, [session]);
 
-  const MAX_RETRIES = 3;
-  const RETRY_DELAY = 1000;
-
-  const sendEmailWithRetry = async (
-    email: string,
-    subject: string,
-    body: string,
-    attempt: number = 0
-  ): Promise<boolean> => {
-    try {
-      const response = await axios.post(
-        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
-        {
-          to: email,
-          subject: subject,
-          text: body,
-        }
-      );
-
-      if (response.status === 200) {
-        return true;
-      } else {
-        throw new Error(`Failed to send email to ${email}`);
-      }
-    } catch (error) {
-      if (attempt < MAX_RETRIES) {
-        const delay = RETRY_DELAY * Math.pow(2, attempt);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        return sendEmailWithRetry(email, subject, body, attempt + 1);
-      } else {
-        return false;
-      }
-    }
-  };
+  // const sendEmail = async () => {
+  //     setLoading(true); // Start loading
+  //     try {
+  //       await Promise.all(
+  //         participants.map(async (participant: { email: string }) => {
+  //           const res = await axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
+  //             to: participant.email,
+  //             subject: emailState.subject,
+  //             text: emailState.value
+  //           });
+  //         })
+  //       );
+  //       alert("Emails sent successfully!");
+  //     } catch (error) {
+  //       console.error("Error sending emails", error);
+  //       alert("Failed to send emails.");
+  //     } finally {
+  //       setLoading(false);
+  //       setModalOpen(false);
+  //       setEmailState({
+  //         subject:'',
+  //         value:''
+  //       })
+  //     }
+  //   };
 
   const sendEmail = async () => {
-    setLoading(true);
+    setLoading(true); // Start loading
+
     try {
-      const results = await Promise.allSettled(
-        participants.map(async (participant: { email: string }) => {
-          const success = await sendEmailWithRetry(
-            participant.email,
-            emailState.subject,
-            emailState.value
-          );
-          return success;
-        })
+      const res = await axios.post(
+        "http://localhost:3001/api/events/send-email-batch",
+        {
+          emails: participants.map((participant) => participant.email),
+          subject: emailState.subject,
+          text: emailState.value,
+        }
       );
-
-      const failedEmails = results
-        .filter(
-          (result) => result.status === "rejected" || result.value === false
-        )
-        .map((result, index) => participants[index]?.email);
-
-      setFailedEmails(failedEmails);
-
-      if (failedEmails.length > 0) {
-        toast.error(
-          "Some emails failed to send. Check the console for details."
-        );
-      } else {
-        toast.success("Emails sent successfully!");
+      if(res.data.failedEmails.length==0){
+        toast.success('All Emails are sent')
+      }else{
+        toast.error(`${res.data.failedEmails.length} emails are not sent`)
       }
+
+      setFailedEmails(res.data.failedEmails);
     } catch (error) {
-      console.error("Error sending emails", error);
+      toast.error("An unexpected error occurred while sending emails.");
     } finally {
       setLoading(false);
       setModalOpen(false);
@@ -189,6 +170,7 @@ function EventDetails({ params }: any) {
               <p className="text-black">
                 Sending emails, please wait... can take upto 3 mins
               </p>
+             
               <div className="spinner-border animate-spin inline-block w-6 h-6 border-4 rounded-full border-t-transparent border-black ml-2"></div>
             </div>
           ) : (

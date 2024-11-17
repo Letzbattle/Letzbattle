@@ -34,10 +34,10 @@
 // };
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-
+import { useRouter } from 'next/navigation';
 export const useApi = () => {
   const { data: session, status } = useSession(); // Fetch session and status
-  
+  const router=useRouter()
   // If the session is still loading, return a loading state
   if (status === 'loading') {
     return {
@@ -48,17 +48,23 @@ export const useApi = () => {
       delete: () => Promise.resolve(null),
     };
   }
+  console.log(session)
 
   // If session is not found, handle the error gracefully
   if (!session || !session.idToken) {
-    throw new Error("User is not authenticated");
+    // throw new Error("User is not authenticated");
+    router.push('/')
+  }
+  if (session && new Date(session.expires) < new Date()) {
+    // session is valid and not expired
+    router.push('/')
   }
 
   // Set default headers
   const api = axios.create({
     baseURL: "https://bitter-quokka-letzbattle-e9e73964.koyeb.app", // Make sure to define this in your environment variables
     headers: {
-      Authorization: `Bearer ${session.idToken}`,
+      Authorization: `Bearer ${session?.idToken}`,
     },
   });
 
