@@ -189,7 +189,7 @@ function LiveEvents() {
               </div>
             ))
         ) : liveEvents.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
             {liveEvents.map((event: any) => (
               <div
                 key={event.id}
@@ -216,7 +216,7 @@ function LiveEvents() {
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
                     Entry Fees:{" "}
-                    <span className="font-medium">${event.entryFees}</span>
+                    <span className="font-medium">INR {event.entryFees}</span>
                   </p>
                 </div>
 

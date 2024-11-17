@@ -318,7 +318,7 @@ export function AllEvents() {
                       translateZ={20}
                       as="button"
                       onClick={() => handleRegisterClick(event.id)}
-                      className={`px-4 py-2 rounded-xl text-xs font-normal ${
+                      className={`px-4 py-2 rounded-xl text-xs text-green-500 font-normal ${
                         checkIfAlreadyRegistered(event)
                           ? "text-gray-400 cursor-not-allowed"
                           : event.seatsLeft > 0
@@ -330,9 +330,10 @@ export function AllEvents() {
                       }
                     >
                       {checkIfAlreadyRegistered(event) ? (
-                        <p>Already Registered</p>
+                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">ALREADY REGISTERED</p>
                       ) : event.seatsLeft > 0 ? (
-                        "Register now →"
+                        <p className="bg-blue-800 text-white text-xs rounded-full p-3">REGISTER NOW →</p>
+                  
                       ) : (
                         "Seats Full"
                       )}

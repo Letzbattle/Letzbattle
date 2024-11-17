@@ -92,7 +92,7 @@ function ReviewEvents() {
                   </p>
                   <p className="text-gray-600 dark:text-gray-300 mt-2">
                     Entry Fees:{" "}
-                    <span className="font-medium">${event.entryFees}</span>
+                    <span className="font-medium">INR {event.entryFees}</span>
                   </p>
                 </div>
 
