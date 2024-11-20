@@ -326,16 +326,16 @@ export function AllEvents() {
                           : "text-gray-200 cursor-not-allowed"
                       }`}
                       disabled={
-                        checkIfAlreadyRegistered(event) || event.seatsLeft <= 0 || !event.isopen
+                        checkIfAlreadyRegistered(event) || event.seatsLeft-event.Participant.length <= 0 || !event.isopen
                       }
                     >
                       {event.isopen?checkIfAlreadyRegistered(event) ? (
                         <p className="bg-blue-300 text-white text-xs rounded-full p-3">ALREADY REGISTERED</p>
-                      ) : event.seatsLeft > 0 ? (
+                      ) : event.seatsLeft-event.Participant.length > 0 ? (
                         <p className="bg-blue-800 text-white text-xs rounded-full p-3">REGISTER NOW →</p>
                   
                       ) : (
-                        "Seats Full"
+                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">Seats Full</p>
                       ): <p className="bg-blue-300 text-white text-xs rounded-full p-3">COMING SOON</p>}
                     </CardItem>
                   </div>
