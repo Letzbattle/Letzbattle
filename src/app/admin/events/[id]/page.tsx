@@ -87,11 +87,11 @@ function EventDetails({ params }: any) {
 
     try {
       const res = await axios.post(
-        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email-batch",
+        "/api/dispatchMail",
         {
           emails: participants.map((participant) => participant.email),
           subject: emailState.subject,
-          text: emailState.value,
+          message: emailState.value,
         }
       );
       if(res.data.failedEmails.length==0){
