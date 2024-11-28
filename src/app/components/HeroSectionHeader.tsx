@@ -98,7 +98,7 @@ const HeroSectionHeader = () => {
       <div className="relative z-10 grid grid-cols-1 gap-4 md:grid-cols-2">
         <div className="flex items-center justify-center">
           <div className="space-y-4 text-center">
-            <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center md:text-7xl text-4xl font-bold leading-none tracking-tighter text-transparent">
+            <h1 className="pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-[#ffd319] via-[#ff2975] to-[#8c1eff] bg-clip-text text-center leading-normal md:text-[4.5rem] text-4xl font-bold tracking-tighter text-transparent">
               Nexgen Battles
             </h1>
             <p className="text-center text-white text-xl font-bold leading-none tracking-tighter">
