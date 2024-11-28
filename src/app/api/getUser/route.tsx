@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user', {
+    const response = await fetch('http://13.48.138.35:3001/api/user', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

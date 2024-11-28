@@ -62,7 +62,7 @@ export const useApi = () => {
 
   // Set default headers
   const api = axios.create({
-    baseURL: "https://bitter-quokka-letzbattle-e9e73964.koyeb.app", // Make sure to define this in your environment variables
+    baseURL: "http://13.48.138.35:3001", // Make sure to define this in your environment variables
     headers: {
       Authorization: `Bearer ${session?.idToken}`,
     },

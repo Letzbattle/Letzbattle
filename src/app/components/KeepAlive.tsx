@@ -8,7 +8,7 @@ const KeepAlive = () => {
   useEffect(() => {
     const keepAlive = async () => {
       try {
-        await axios.get('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events');
+        await axios.get('http://13.48.138.35:3001/api/events');
         console.log('Function pinged successfully.');
       } catch (error) {
         console.error('Error pinging function:', error);

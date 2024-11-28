@@ -60,7 +60,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
     }
 
-    const batchSize = 8;
+    const batchSize = 3;
     const delayMs = 15000;
 
     const failedEmails = await sendBatchEmails(emails, subject, message, batchSize, delayMs);
@@ -78,3 +78,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "An error occurred while sending emails." }, { status: 500 });
   }
 }
+
+// sh -i "C:\Users\Dell\Downloads\nexgenbattles.pem" ubuntu@
+// sh -i "C:\Users\Dell\Downloads\nexgenbattles.pem" ubuntu@13.48.138.35ALTER USER yourusername WITH SUPERUSER;
