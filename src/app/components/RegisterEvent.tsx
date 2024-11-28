@@ -64,7 +64,7 @@ const RegisterEvent = (params: any) => {
     const getEventDetails = async () => {
       try {
         const res = await axios.get(
-          `http://13.48.138.35:3001/api/events/${params.params.id}`
+          `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`
         );
         console.log(res);
         setEvent(res.data.event);
@@ -100,7 +100,7 @@ const RegisterEvent = (params: any) => {
         // Verify payment by sending the response data to your backend
         try {
           await axios.post(
-            "http://13.48.138.35:3001/api/payment/verify",
+            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/verify",
             paymentData
           );
           await post(`/api/events/${params.params.id}/participants`, formState);
@@ -109,7 +109,7 @@ const RegisterEvent = (params: any) => {
 
           router.push("/success");
           await axios.post(
-            "http://13.48.138.35:3001/api/events/send-email",
+            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
             {
               to: session?.user.email,
               subject: `Successfully registered ${event.name}`,
@@ -154,7 +154,7 @@ const RegisterEvent = (params: any) => {
 
         // After successfully registering, create an order on the backend
         const paymentResponse = await axios.post(
-          "http://13.48.138.35:3001/api/payment/order",
+          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/order",
           {
             amount: event.entryFees, // Example amount for the event, in INR
             currency: "INR",
@@ -175,7 +175,7 @@ const RegisterEvent = (params: any) => {
 
       router.push("/success");
       await axios.post(
-        "http://13.48.138.35:3001/api/events/send-email",
+        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
         {
           to: session?.user.email,
           subject: `Successfully registered ${event.name}`,

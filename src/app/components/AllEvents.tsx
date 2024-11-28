@@ -40,7 +40,7 @@ export function AllEvents() {
       setLoading(true);
       try {
         const res = await axios.get(
-          "http://13.48.138.35:3001/api/events"
+          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events"
         );
         setAllEvents(res.data.events.filter((event: Event) => event.reviewed));
 

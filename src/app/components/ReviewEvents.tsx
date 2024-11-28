@@ -16,7 +16,7 @@ function ReviewEvents() {
     const getAllEvents = async () => {
       try {
         const res = await get(
-          "http://13.48.138.35:3001/api/events/my-events"
+          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/my-events"
         );
         
         const allEvents = res?.data?.events || [];

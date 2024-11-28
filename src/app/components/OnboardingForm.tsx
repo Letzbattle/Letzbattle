@@ -129,7 +129,7 @@ export function OnboardingForm() {
     };
 
     try {
-      // const response = await callApi('http://13.48.138.35:3001/api/onboard',formState as any)
+      // const response = await callApi('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard',formState as any)
       onboardFormSchema.parse(parsedData);
       // if(!validation.success){
       //   const formattedErrors=validation.error.format();
@@ -152,7 +152,7 @@ export function OnboardingForm() {
         setError("");
       }
       // const response = await axios.post(
-      //   "http://13.48.138.35:3001/api/onboard",
+      //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard",
       //   formState,
       //   {
       //     headers: {
@@ -175,7 +175,7 @@ export function OnboardingForm() {
 
       // Update user isOnboarded to true via the user API
       // await axios.patch(
-      //   "http://13.48.138.35:3001/api/user",
+      //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user",
       //   { isOnboarded: true }, // Update the onboard status
       //   {
       //     headers: {

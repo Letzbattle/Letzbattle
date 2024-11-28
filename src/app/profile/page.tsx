@@ -33,7 +33,7 @@
 
 //     if (status === "authenticated") {
 //       const userInfo = await get(
-//         "http://13.48.138.35:3001/api/user"
+//         "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user"
 //       );
 //       console.log("user", userInfo?.data.user);
 //       setUserInfo(userInfo?.data.user);
@@ -142,7 +142,7 @@ const Profile = () => {
     const session = await getSession();
     if (status === "authenticated") {
       const userInfo = await get(
-        "http://13.48.138.35:3001/api/user"
+        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user"
       );
       setUserInfo(userInfo?.data.user);
       console.log(userInfo?.data.user)
