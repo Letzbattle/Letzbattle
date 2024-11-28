@@ -264,7 +264,7 @@ export function AllEvents() {
                     translateZ="60"
                     className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
                   >
-                    Date & Time: {new Date(event.date).toLocaleString()}
+                    Date & Time: {event.isopen ? new Date(event.date).toLocaleString():"Coming Soon"}
                   </CardItem>
                   <CardItem
                     as="p"
@@ -287,7 +287,7 @@ export function AllEvents() {
                       // href={user ? `/register/${event.id}` : "/login"}
                       className="px-4 py-2 rounded-xl text-xs font-normal text-white bg-emerald-500 absolute top-2 right-2"
                     >
-                      {event.isopen === true ? "Open" : "Coming"}
+                      {event.isopen === true ? "Open" : "Coming soon"}
                     </CardItem>
                   </CardItem>
                   <CardItem
@@ -326,17 +326,17 @@ export function AllEvents() {
                           : "text-gray-200 cursor-not-allowed"
                       }`}
                       disabled={
-                        checkIfAlreadyRegistered(event) || event.seatsLeft <= 0
+                        checkIfAlreadyRegistered(event) || event.seatsLeft-event.Participant.length <= 0 || !event.isopen
                       }
                     >
-                      {checkIfAlreadyRegistered(event) ? (
+                      {event.isopen?checkIfAlreadyRegistered(event) ? (
                         <p className="bg-blue-300 text-white text-xs rounded-full p-3">ALREADY REGISTERED</p>
-                      ) : event.seatsLeft > 0 ? (
+                      ) : event.seatsLeft-event.Participant.length > 0 ? (
                         <p className="bg-blue-800 text-white text-xs rounded-full p-3">REGISTER NOW →</p>
                   
                       ) : (
-                        "Seats Full"
-                      )}
+                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">Seats Full</p>
+                      ): <p className="bg-blue-300 text-white text-xs rounded-full p-3">COMING SOON</p>}
                     </CardItem>
                   </div>
                 </CardBody>

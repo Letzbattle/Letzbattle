@@ -318,7 +318,7 @@ const RegisterEvent = (params: any) => {
             />
           </LabelInputContainer>
           <LabelInputContainer className="mb-4">
-            <Label htmlFor="player5Name">Player Five Name</Label>
+            <Label htmlFor="player5Name">Player Five Name (optional)</Label>
             <Input
               id="player5Name"
               name="player5Name"

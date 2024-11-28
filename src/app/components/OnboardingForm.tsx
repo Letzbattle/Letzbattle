@@ -39,7 +39,7 @@ export function OnboardingForm() {
     phoneNumber: "",
     bgmiId: "",
     instagramId: "",
-    image: "",
+    image: "https://img.freepik.com/premium-vector/logo-kid-gamer_573604-730.jpg?semt=ais_hybrid",
   });
 
   const [success, setSuccess] = useState("");
@@ -51,7 +51,7 @@ export function OnboardingForm() {
 
   const { data: session, update } = useSession();
 
-  const [imagePreview, setImagePreview] = useState(""); // For previewing the uploaded image
+  const [imagePreview, setImagePreview] = useState("https://img.freepik.com/premium-vector/logo-kid-gamer_573604-730.jpg?semt=ais_hybrid"); // For previewing the uploaded image
   const [imageFile, setImageFile] = useState<File | null>(null); // For storing the file before upload
   const [uploading, setUploading] = useState(false); // For showing loading state during upload
   const [loader, setLoader] = useState(false);
@@ -116,16 +116,9 @@ export function OnboardingForm() {
 
     const imageUrl = await uploadImage();
 
-    if (!imageUrl) {
-      setError("Image upload failed");
-      toast.error("Image upload failed, Please try again.");
-      setLoader(false);
-      return;
-    }
-
     const imageData = {
       ...formState,
-      image: imageUrl, // Use the uploaded image URL
+      image: imageUrl || "https://img.freepik.com/premium-vector/logo-kid-gamer_573604-730.jpg?semt=ais_hybrid", // Use the uploaded image URL
     };
     // const validation=onboardFormSchema.safeParse(formState);
     const parsedData = {

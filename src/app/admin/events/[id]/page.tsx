@@ -87,11 +87,11 @@ function EventDetails({ params }: any) {
 
     try {
       const res = await axios.post(
-        "http://localhost:3001/api/events/send-email-batch",
+        "/api/dispatchMail",
         {
           emails: participants.map((participant) => participant.email),
           subject: emailState.subject,
-          text: emailState.value,
+          message: emailState.value,
         }
       );
       if(res.data.failedEmails.length==0){
@@ -152,7 +152,7 @@ function EventDetails({ params }: any) {
           isOpen={isFailedModalOpen}
           onClose={() => setFailedModalOpen(false)}
         >
-          {failedEmails.length > 0 && (
+          {failedEmails.length > 0 ? (
             <div className="mt-4 text-red-500">
               <h3 className="text-lg font-semibold">Failed to send to:</h3>
               <ul>
@@ -161,7 +161,7 @@ function EventDetails({ params }: any) {
                 ))}
               </ul>
             </div>
-          )}
+          ):"All Emails are sent successfully"}
         </Modal>
 
         <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
