@@ -91,7 +91,7 @@ import { Cloud, fetchSimpleIcons, ICloud, renderSimpleIcon, SimpleIcon } from "r
 export const cloudProps: Omit<ICloud, "children"> = {
     containerProps: {
         className:
-            "flex justify-center items-center w-full pt-10 pointer-events-auto sm:pointer-events-none", // Tailwind classes
+            "flex justify-center items-center w-full pt-10", // Tailwind classes
     },
     options: {
         reverse: true,
@@ -139,7 +139,22 @@ type IconData = Awaited<ReturnType<typeof fetchSimpleIcons>>;
 
 export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
     const [data, setData] = useState<IconData | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
     const { theme } = { theme: "dark" };
+
+    useEffect(() => {
+        // Determine if the user is on a mobile device
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 640); // Tailwind's `sm` breakpoint
+        };
+
+        handleResize(); // Check on initial load
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         fetchSimpleIcons({ slugs: iconSlugs }).then(setData);
@@ -155,7 +170,11 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
 
     return (
         // @ts-ignore
-        <Cloud {...cloudProps}>
+        <Cloud {...cloudProps}
+        options={{
+            ...cloudProps.options,
+            dragControl: !isMobile, // Disable drag control on mobile
+        }}>
             <>{renderedIcons}</>
         </Cloud>
     );
