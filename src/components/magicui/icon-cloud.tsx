@@ -171,10 +171,19 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
     return (
         // @ts-ignore
         <Cloud {...cloudProps}
+        containerProps={{
+            className: `flex justify-center items-center w-full pt-10 ${
+                isMobile ? "pointer-events-none" : ""
+            }`,
+        }}
         options={{
             ...cloudProps.options,
-            dragControl: !isMobile, // Disable drag control on mobile
-        }}>
+            dragControl: !isMobile, // Disable drag on mobile
+            clickToFront: !isMobile ? 500 : 0, // Disable click interactions on mobile
+            // maxSpeed: isMobile ? 0 : cloudProps.options.maxSpeed, // Disable rotation on mobile
+            // minSpeed: isMobile ? 0 : cloudProps.options.minSpeed, // Disable rotation on mobile
+        }}
+        >
             <>{renderedIcons}</>
         </Cloud>
     );
