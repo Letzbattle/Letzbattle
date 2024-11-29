@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const response = await fetch('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user', {
+    const response = await fetch('https://api.nexgenbattles.com/api/user', {
       headers: {
         Authorization: `Bearer ${token}`,
       },

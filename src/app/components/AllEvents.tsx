@@ -40,7 +40,7 @@ export function AllEvents() {
       setLoading(true);
       try {
         const res = await axios.get(
-          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events"
+          "https://api.nexgenbattles.com/api/events"
         );
         setAllEvents(res.data.events.filter((event: Event) => event.reviewed));
 

@@ -17,7 +17,7 @@ function AdminEvents() {
     const getAllEvents = async () => {
       try {
         const res = await get(
-          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/my-events"
+          "https://api.nexgenbattles.com/api/events/my-events"
         );
         console.log(res);
         setAllEvents(res?.data?.events || []);

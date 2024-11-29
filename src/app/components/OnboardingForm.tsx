@@ -129,7 +129,7 @@ export function OnboardingForm() {
     };
 
     try {
-      // const response = await callApi('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard',formState as any)
+      // const response = await callApi('https://api.nexgenbattles.com/api/onboard',formState as any)
       onboardFormSchema.parse(parsedData);
       // if(!validation.success){
       //   const formattedErrors=validation.error.format();
@@ -152,7 +152,7 @@ export function OnboardingForm() {
         setError("");
       }
       // const response = await axios.post(
-      //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/onboard",
+      //   "https://api.nexgenbattles.com/api/onboard",
       //   formState,
       //   {
       //     headers: {
@@ -175,7 +175,7 @@ export function OnboardingForm() {
 
       // Update user isOnboarded to true via the user API
       // await axios.patch(
-      //   "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/user",
+      //   "https://api.nexgenbattles.com/api/user",
       //   { isOnboarded: true }, // Update the onboard status
       //   {
       //     headers: {

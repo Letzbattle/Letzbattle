@@ -64,7 +64,7 @@ const RegisterEvent = (params: any) => {
     const getEventDetails = async () => {
       try {
         const res = await axios.get(
-          `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.params.id}`
+          `https://api.nexgenbattles.com/api/events/${params.params.id}`
         );
         console.log(res);
         setEvent(res.data.event);
@@ -100,7 +100,7 @@ const RegisterEvent = (params: any) => {
         // Verify payment by sending the response data to your backend
         try {
           await axios.post(
-            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/verify",
+            "https://api.nexgenbattles.com/api/payment/verify",
             paymentData
           );
           await post(`/api/events/${params.params.id}/participants`, formState);
@@ -109,7 +109,7 @@ const RegisterEvent = (params: any) => {
 
           router.push("/success");
           await axios.post(
-            "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
+            "https://api.nexgenbattles.com/api/events/send-email",
             {
               to: session?.user.email,
               subject: `Successfully registered ${event.name}`,
@@ -154,7 +154,7 @@ const RegisterEvent = (params: any) => {
 
         // After successfully registering, create an order on the backend
         const paymentResponse = await axios.post(
-          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/payment/order",
+          "https://api.nexgenbattles.com/api/payment/order",
           {
             amount: event.entryFees, // Example amount for the event, in INR
             currency: "INR",
@@ -175,7 +175,7 @@ const RegisterEvent = (params: any) => {
 
       router.push("/success");
       await axios.post(
-        "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email",
+        "https://api.nexgenbattles.com/api/events/send-email",
         {
           to: session?.user.email,
           subject: `Successfully registered ${event.name}`,

@@ -44,7 +44,7 @@ function EventDetails({ params }: any) {
 
   const getEventDetails = async () => {
     const res = await axios.get(
-      `https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/${params.id}`
+      `https://api.nexgenbattles.com/api/events/${params.id}`
     );
     setEventDetails(res?.data);
   };
@@ -61,7 +61,7 @@ function EventDetails({ params }: any) {
   //     try {
   //       await Promise.all(
   //         participants.map(async (participant: { email: string }) => {
-  //           const res = await axios.post('https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/send-email', {
+  //           const res = await axios.post('https://api.nexgenbattles.com/api/events/send-email', {
   //             to: participant.email,
   //             subject: emailState.subject,
   //             text: emailState.value

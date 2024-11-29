@@ -16,7 +16,7 @@ function ReviewEvents() {
     const getAllEvents = async () => {
       try {
         const res = await get(
-          "https://bitter-quokka-letzbattle-e9e73964.koyeb.app/api/events/my-events"
+          "https://api.nexgenbattles.com/api/events/my-events"
         );
         
         const allEvents = res?.data?.events || [];
