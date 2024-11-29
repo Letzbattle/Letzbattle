@@ -1,18 +1,12 @@
 "use client";
 
-// import { useTheme } from "next-themes";
 import { useEffect, useMemo, useState } from "react";
 import { Cloud, fetchSimpleIcons, ICloud, renderSimpleIcon, SimpleIcon } from "react-icon-cloud";
 
 export const cloudProps: Omit<ICloud, "children"> = {
     containerProps: {
-        style: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            paddingTop: 40,
-        },
+        className:
+            "flex justify-center items-center w-full pt-10", // Tailwind classes
     },
     options: {
         reverse: true,
@@ -28,7 +22,7 @@ export const cloudProps: Omit<ICloud, "children"> = {
         maxSpeed: 0.04,
         minSpeed: 0.02,
         dragControl: false,
-        lock:"xy",
+        lock: "xy",
     },
 };
 
@@ -47,7 +41,7 @@ export const renderCustomIcon = (icon: SimpleIcon, theme: string) => {
             href: undefined,
             target: undefined,
             rel: undefined,
-            onClick: e => e.preventDefault(),
+            onClick: (e) => e.preventDefault(),
         },
     });
 };
@@ -60,7 +54,22 @@ type IconData = Awaited<ReturnType<typeof fetchSimpleIcons>>;
 
 export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
     const [data, setData] = useState<IconData | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
     const { theme } = { theme: "dark" };
+
+    useEffect(() => {
+        // Determine if the user is on a mobile device
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 640); // Tailwind's sm breakpoint
+        };
+
+        handleResize(); // Check on initial load
+        window.addEventListener("resize", handleResize);
+
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         fetchSimpleIcons({ slugs: iconSlugs }).then(setData);
@@ -69,14 +78,27 @@ export default function IconCloud({ iconSlugs }: DynamicCloudProps) {
     const renderedIcons = useMemo(() => {
         if (!data) return null;
 
-        return Object.values(data.simpleIcons).map(icon =>
+        return Object.values(data.simpleIcons).map((icon) =>
             renderCustomIcon(icon, theme || "light")
         );
     }, [data, theme]);
 
     return (
         // @ts-ignore
-        <Cloud {...cloudProps}>
+        <Cloud {...cloudProps}
+        containerProps={{
+            className: `flex justify-center items-center w-full pt-10 ${
+                isMobile ? "pointer-events-none" : ""
+            }`,
+        }}
+        options={{
+            ...cloudProps.options,
+            dragControl: !isMobile, // Disable drag on mobile
+            clickToFront: !isMobile ? 500 : 0, // Disable click interactions on mobile
+            // maxSpeed: isMobile ? 0 : cloudProps.options.maxSpeed, // Disable rotation on mobile
+            // minSpeed: isMobile ? 0 : cloudProps.options.minSpeed, // Disable rotation on mobile
+        }}
+        >
             <>{renderedIcons}</>
         </Cloud>
     );
