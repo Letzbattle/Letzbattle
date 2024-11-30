@@ -67,7 +67,9 @@ export function AllEvents() {
   const filteredEvents = allEvents.filter(
     (event: any) => event.eventType.toLowerCase() === activeTab.toLowerCase()
   );
-
+  const sortedEvents = filteredEvents.sort((a: Event, b: Event) => {
+    return a.isopen === b.isopen ? 0 : a.isopen ? -1 : 1;
+  });
   const handleRegisterClick = (eventId: string) => {
     setSelectedEventId(eventId);
     setIsOpen(true);
@@ -240,8 +242,8 @@ export function AllEvents() {
           ))} */}
 
         {/* Display filtered events based on active tab */}
-        {!loading && filteredEvents.length > 0
-          ? filteredEvents.map((event: Event) => (
+        {!loading && sortedEvents.length > 0
+          ? sortedEvents.map((event: Event) => (
               <CardContainer
                 className="inter-var  w-full sm:w-[30rem] mx-2"
                 key={event.id}
