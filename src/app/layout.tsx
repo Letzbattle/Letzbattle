@@ -10,6 +10,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { Analytics } from "@vercel/analytics/react"
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +34,7 @@ export default async function RootLayout({
         <ToastContainer  style={{ zIndex: 9999 }} position="top-right" autoClose={5000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnHover draggable pauseOnFocusLoss  /> 
       {children}
       <Footer/>
+      <Analytics/>
       </NextAuthSessionProvider>
       </body>
       <Script src="https://checkout.razorpay.com/v1/checkout.js" />
