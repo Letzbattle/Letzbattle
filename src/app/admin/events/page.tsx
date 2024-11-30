@@ -31,7 +31,7 @@ function AdminEvents() {
     if (session) {
       getAllEvents();
     }
-  }, [session, get]);
+  }, [session]);
 
   return (
     <div className="p-6 min-h-screen bg-black dark:bg-gray-900 relative z-10">
