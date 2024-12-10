@@ -25,7 +25,40 @@ export const FloatingNav = ({
   const [session, setSession] = useState<any>(null);
   const [isProfileOpen, setProfileOpen] = useState(false);
   const [user, setUserInfo] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (event:any) => {
+      // Prevent the default mini-infobar from showing
+      event.preventDefault();
+      // Save the event to trigger later
+      setDeferredPrompt(event);
+    };
+
+    // Listen for the beforeinstallprompt event
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = () => {
+    if (deferredPrompt) {
+      // Show the install prompt
+      deferredPrompt?.prompt();
+
+      // Handle the user's choice
+      deferredPrompt?.userChoice?.then((choiceResult:any) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the PWA installation');
+        } else {
+          console.log('User dismissed the PWA installation');
+        }
+        setDeferredPrompt(null); // Clear the prompt after use
+      });
+    }
+  };
   // Fetch session data when the component mounts
   useEffect(() => {
     const fetchSession = async () => {
@@ -107,6 +140,11 @@ export const FloatingNav = ({
             </Link>
           ))}
         </div>
+        {deferredPrompt && (
+        <button onClick={handleInstallClick} className="flex items-center space-x-2 text-gray-300 hover:text-white">
+          Install App
+        </button>
+      )}
 
         {session ? (
           // <button
@@ -158,6 +196,7 @@ export const FloatingNav = ({
                     Logout
                   </span>
                 </Link>
+                
               </div>
             )}
           </div>

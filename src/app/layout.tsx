@@ -17,6 +17,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "NexGenBattles",
   description: "A Gaming Platform",
+  manifest: "/manifest.json",
 };
 
 export default async function RootLayout({
