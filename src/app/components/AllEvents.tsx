@@ -18,6 +18,7 @@ interface Event {
   seatsLeft: number;
   gameName: string;
   isopen: boolean;
+  isOpen: boolean;
   expired: boolean;
   image: string;
   eventType: string;
@@ -39,9 +40,7 @@ export function AllEvents() {
     const getAllEvents = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(
-          "https://api.nexgenbattles.com/api/events"
-        );
+        const res = await axios.get("https://api.nexgenbattles.com/api/events");
         setAllEvents(res.data.events.filter((event: Event) => event.reviewed));
 
         // console.log(res.data.events.filter((event: Event) => event.reviewed));
@@ -266,7 +265,10 @@ export function AllEvents() {
                     translateZ="60"
                     className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
                   >
-                    Date & Time: {event.isopen ? new Date(event.date).toLocaleString():"Coming Soon"}
+                    Date & Time:{" "}
+                    {event.isopen
+                      ? new Date(event.date).toLocaleString()
+                      : "Coming Soon"}
                   </CardItem>
                   <CardItem
                     as="p"
@@ -289,7 +291,11 @@ export function AllEvents() {
                       // href={user ? `/register/${event.id}` : "/login"}
                       className="px-4 py-2 rounded-xl text-xs font-normal text-white bg-emerald-500 absolute top-2 right-2"
                     >
-                      {event.isopen === true ? "Open" : "Coming soon"}
+                      {event.expired
+                        ? "Expired"
+                        : event.isopen === true
+                        ? "Open"
+                        : "Coming soon"}
                     </CardItem>
                   </CardItem>
                   <CardItem
@@ -307,14 +313,20 @@ export function AllEvents() {
                       as="button"
                       className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
                     >
-                      Slots Left: {event.seatsLeft-event.Participant.length}
+                      Slots Left:{" "}
+                      {event.isOpen
+                        ? event.seatsLeft - event.Participant.length
+                        : 0}
                     </CardItem>
                     <CardItem
                       translateZ={20}
                       as="button"
                       className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
                     >
-                      Total Team: {event.Participant.length}
+                      Total Team:{" "}
+                      {event.isOpen
+                        ? event.Participant.length
+                        : event.seatsLeft}
                     </CardItem>
                     <CardItem
                       translateZ={20}
@@ -328,17 +340,34 @@ export function AllEvents() {
                           : "text-gray-200 cursor-not-allowed"
                       }`}
                       disabled={
-                        checkIfAlreadyRegistered(event) || event.seatsLeft-event.Participant.length <= 0 || !event.isopen
+                        checkIfAlreadyRegistered(event) ||
+                        event.seatsLeft - event.Participant.length <= 0 ||
+                        !event.isopen
                       }
                     >
-                      {event.isopen?checkIfAlreadyRegistered(event) ? (
-                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">ALREADY REGISTERED</p>
-                      ) : event.seatsLeft-event.Participant.length > 0 ? (
-                        <p className="bg-blue-800 text-white text-xs rounded-full p-3">REGISTER NOW →</p>
-                  
+                      {event.expired ? (
+                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">
+                          EXPIRED
+                        </p>
+                      ) : event.isopen ? (
+                        checkIfAlreadyRegistered(event) ? (
+                          <p className="bg-blue-300 text-white text-xs rounded-full p-3">
+                            ALREADY REGISTERED
+                          </p>
+                        ) : event.seatsLeft - event.Participant.length > 0 ? (
+                          <p className="bg-blue-800 text-white text-xs rounded-full p-3">
+                            REGISTER NOW →
+                          </p>
+                        ) : (
+                          <p className="bg-blue-300 text-white text-xs rounded-full p-3">
+                            Seats Full
+                          </p>
+                        )
                       ) : (
-                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">Seats Full</p>
-                      ): <p className="bg-blue-300 text-white text-xs rounded-full p-3">COMING SOON</p>}
+                        <p className="bg-blue-300 text-white text-xs rounded-full p-3">
+                          COMING SOON
+                        </p>
+                      )}
                     </CardItem>
                   </div>
                 </CardBody>
